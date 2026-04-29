@@ -1,0 +1,7 @@
+{
+    "DB_HOST": "202.10.42.212",
+    "DB_PORT": "5432",
+    "DB_DATABASE": "erapor_dateng",
+    "DB_USERNAME": "erapor_dateng",
+    "DB_PASSWORD": "1234"
+}
