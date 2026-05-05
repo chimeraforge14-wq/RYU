@@ -11,13 +11,13 @@
         <input type="text" id="searchInput" placeholder="Cari data di sini..." style="width: 100%; padding: 0.75rem 0.75rem 0.75rem 40px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; outline: none;">
     </div>
     <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
-        @if(strtolower($type) == 'guru' && session('role') == 'admin')
+        @if(strtolower($type) == 'guru' && (session('role') == 'admin' || session('role') == 'superadmin'))
             <button onclick="document.getElementById('modalGuru').style.display='flex'" class="btn-sync" style="background: var(--accent-gradient); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Tambah Guru Manual
             </button>
         @endif
-        @if(strtolower($type) == 'pembelajaran' && session('role') == 'admin')
+        @if(strtolower($type) == 'pembelajaran' && (session('role') == 'admin' || session('role') == 'superadmin'))
             <button onclick="document.getElementById('modalPembelajaran').style.display='flex'" class="btn-sync" style="background: var(--accent-gradient); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Atur Kelas Guru
@@ -29,7 +29,7 @@
     </div>
 </div>
 
-@if(strtolower($type) == 'guru' && session('role') == 'admin')
+@if(strtolower($type) == 'guru' && (session('role') == 'admin' || session('role') == 'superadmin'))
 <!-- Modal Guru Manual -->
 <div id="modalGuru" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
     <div class="stat-card" style="width: 100%; max-width: 500px; padding: 2rem; position: relative; animation: slideUp 0.3s ease;">
@@ -78,7 +78,7 @@
 </div>
 @endif
 
-@if(strtolower($type) == 'pembelajaran' && session('role') == 'admin')
+@if(strtolower($type) == 'pembelajaran' && (session('role') == 'admin' || session('role') == 'superadmin'))
 <!-- Modal Pembelajaran Manual -->
 <div id="modalPembelajaran" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; align-items: center; justify-content: center; padding: 1rem;">
     <div class="stat-card" style="width: 100%; max-width: 500px; padding: 2rem; position: relative; animation: slideUp 0.3s ease;">

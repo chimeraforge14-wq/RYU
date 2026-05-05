@@ -5,31 +5,74 @@
     <title>Rapor_{{ $siswaData['nama'] ?? 'Siswa' }}</title>
     <style>
         @page { margin: 1cm; size: A4 portrait; }
-        body { font-family: 'Times New Roman', serif; font-size: 11pt; line-height: 1.3; }
+        body { font-family: 'Times New Roman', serif; font-size: 10pt; line-height: 1.3; margin: 0; padding: 0; }
         .text-center { text-align: center; }
         .text-bold { font-weight: bold; }
-        .header { font-size: 14pt; margin-bottom: 20px; font-weight: bold; }
+        .text-uppercase { text-transform: uppercase; }
         
-        /* Layout Info menggunakan Tabel (Pengganti Flex) */
-        .info-table { width: 100%; margin-bottom: 15px; border-collapse: collapse; }
-        .info-table td { vertical-align: top; padding: 2px; }
+        /* Watermark */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            opacity: 0.1;
+            z-index: -1000;
+            width: 400px;
+        }
+
+        /* COP Sekolah */
+        .cop-table { width: 100%; border-bottom: 3px solid black; margin-bottom: 15px; padding-bottom: 5px; }
+        .cop-logo { width: 80px; }
+        .cop-text { text-align: center; }
+        .cop-school-name { font-size: 16pt; font-weight: bold; }
+        .cop-address { font-size: 9pt; }
+
+        .header-title { font-size: 12pt; margin-bottom: 15px; font-weight: bold; text-decoration: underline; }
+        
+        /* Layout Info */
+        .info-table { width: 100%; margin-bottom: 10px; border-collapse: collapse; font-size: 9pt; }
+        .info-table td { vertical-align: top; padding: 1px; }
         
         /* Data Nilai */
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .data-table th, .data-table td { border: 1px solid black; padding: 5px; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 9pt; }
+        .data-table th, .data-table td { border: 1px solid black; padding: 4px; }
         .data-table th { background-color: #f0f0f0; }
 
-        /* Catatan & Absensi menggunakan tabel agar sejajar */
-        .box-table { width: 100%; margin-top: 20px; }
-        .box { border: 1px solid black; padding: 10px; height: 80px; }
+        /* Catatan & Absensi */
+        .box-table { width: 100%; margin-top: 15px; font-size: 9pt; }
+        .box { border: 1px solid black; padding: 8px; height: 60px; }
 
         /* Tanda Tangan */
-        .signature-table { width: 100%; margin-top: 30px; }
-        .signature-table td { width: 33%; text-align: center; vertical-align: top; padding-top: 20px; }
+        .signature-table { width: 100%; margin-top: 20px; font-size: 9pt; }
+        .signature-table td { width: 33%; text-align: center; vertical-align: top; }
     </style>
 </head>
 <body>
-    <div class="header text-center">
+    @if($identity['school_logo'])
+        <img src="{{ $identity['school_logo'] }}" class="watermark">
+    @endif
+
+    <!-- COP SEKOLAH -->
+    <table class="cop-table">
+        <tr>
+            <td class="cop-logo">
+                @if($identity['school_logo'])
+                    <img src="{{ $identity['school_logo'] }}" style="width: 70px;">
+                @endif
+            </td>
+            <td class="cop-text">
+                <div class="cop-school-name">{{ $sekolah['nama'] ?? 'NAMA SEKOLAH' }}</div>
+                <div class="cop-address">
+                    {{ $sekolah['alamat_jalan'] ?? '' }} {{ $sekolah['desa_kelurahan'] ?? '' }}<br>
+                    Kecamatan {{ $sekolah['kecamatan'] ?? '' }}, {{ $sekolah['kabupaten_kota'] ?? '' }}<br>
+                    NPSN: {{ $sekolah['npsn'] ?? '-' }} | Kode Registrasi: {{ $identity['koreg_unik'] ?? '-' }}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="header-title text-center">
         LAPORAN HASIL BELAJAR (RAPOR)
     </div>
 
@@ -40,11 +83,11 @@
         </tr>
         <tr>
             <td>NISN</td><td>:</td><td>{{ $siswaData['nisn'] ?? '-' }}</td>
-            <td>Fase</td><td>:</td><td>B</td>
+            <td>Fase</td><td>:</td><td>{{ $rombelData['fase'] ?? '-' }}</td>
         </tr>
         <tr>
             <td>Sekolah</td><td>:</td><td>{{ $sekolah['nama'] ?? '-' }}</td>
-            <td>Semester</td><td>:</td><td>Ganjil</td>
+            <td>Semester</td><td>:</td><td>{{ $identity['semester'] ?? 'Ganjil' }}</td>
         </tr>
     </table>
 
@@ -65,7 +108,7 @@
                     <td class="text-center">{{ $no++ }}</td>
                     <td>{{ $name }}</td>
                     <td class="text-center text-bold">{{ $nilai ? $nilai->nilai_akhir : '-' }}</td>
-                    <td style="font-size: 9pt;">
+                    <td style="font-size: 8pt;">
                         {!! $nilai ? strip_tags($nilai->deskripsi_capaian, '<b><strong>') : 'Belum ada data capaian.' !!}
                     </td>
                 </tr>
@@ -86,7 +129,7 @@
             <td width="5%"></td>
             <td width="55%" style="vertical-align: top;">
                 <b>Catatan Wali Kelas:</b>
-                <div class="box" style="font-size: 9pt;">
+                <div class="box" style="font-size: 8pt;">
                     {{ $pelengkap->catatan_wali_kelas ?? '-' }}
                 </div>
             </td>
@@ -96,38 +139,32 @@
     <table class="signature-table">
         <tr>
             <td width="33%">
-                Mengetahui,<br>Orang Tua/Wali<br><br><br><br><br><br>
+                Mengetahui,<br>Orang Tua/Wali<br><br><br><br><br>
                 ..........................................
             </td>
-            <td width="33%" style="position: relative; vertical-align: top;">
+            <td width="33%" style="position: relative;">
                 Kepala Sekolah,<br>
-                <div style="height: 80px; margin-top: 5px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center;">
+                <div style="height: 60px; margin-top: 5px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center;">
                     @if($identity['headmaster_signature'])
-                        <img src="{{ $identity['headmaster_signature'] }}" style="height: 70px; max-width: 150px;">
-                    @else
-                        <br><br><br>
+                        <img src="{{ $identity['headmaster_signature'] }}" style="height: 60px; max-width: 150px;">
                     @endif
                 </div>
                 <span class="text-bold" style="text-decoration: underline;">{{ $identity['headmaster_name'] }}</span><br>
                 NIP. {{ $identity['headmaster_nip'] }}
             </td>
-            <td width="33%" style="vertical-align: top;">
-                .........., ........... 2026<br>
-                Wali Kelas,<br><br><br><br><br><br>
+            <td width="33%">
+                {{ $sekolah['kabupaten_kota'] ?? '..........' }}, {{ $identity['titimangsa_rapor'] ?? date('d F Y') }}<br>
+                Wali Kelas,<br>
+                <div style="height: 60px; margin-top: 5px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center;">
+                    @if(isset($waliKelasSignature) && $waliKelasSignature)
+                        <img src="{{ $waliKelasSignature }}" style="height: 60px; max-width: 150px;">
+                    @else
+                        <br><br><br>
+                    @endif
+                </div>
                 <span class="text-bold" style="text-decoration: underline;">{{ $rombelData['ptk_id_str'] ?? '..........................................' }}</span><br>
                 NIP. {{ $rombelData['ptk_nip'] ?? '-' }}
             </td>
-        </tr>
-    </table>
-</body>
-</html>
- </table>
-
-    <table class="signature-table">
-        <tr>
-            <td>Orang Tua/Wali<br><br><br><br>________________</td>
-            <td>Kepala Sekolah<br><br><br><br>________________</td>
-            <td>Wali Kelas<br><br><br><br>________________</td>
         </tr>
     </table>
 </body>

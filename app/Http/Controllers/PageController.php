@@ -16,7 +16,33 @@ class PageController extends Controller
 
     public function profile()
     {
-        return view('pages.profile');
+        $username = session('username');
+        $ptk_id = session('ptk_id');
+        $signature_key = $ptk_id ? "signature_{$ptk_id}" : "signature_{$username}";
+        $signature = \App\Models\Setting::where('key', $signature_key)->value('value');
+        
+        return view('pages.profile', compact('signature'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            'signature' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
+        ]);
+
+        $username = session('username');
+        $ptk_id = session('ptk_id');
+        $signature_key = $ptk_id ? "signature_{$ptk_id}" : "signature_{$username}";
+
+        if ($request->hasFile('signature')) {
+            $path = $request->file('signature')->store('public/signatures');
+            \App\Models\Setting::updateOrCreate(
+                ['key' => $signature_key],
+                ['value' => $path]
+            );
+        }
+
+        return back()->with('success', 'Profil berhasil diperbarui!');
     }
 
     public function pengguna()

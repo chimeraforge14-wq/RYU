@@ -156,4 +156,30 @@ class P5Controller extends Controller
 
         return back()->with('success', 'Nilai P5 berhasil disimpan.');
     }
+
+    // New methods for Groups and Activities
+    public function manageGroups()
+    {
+        $groups = \App\Models\KokurikulerGroup::with('activities')->get();
+        $ptks = $this->dapodikService->getPTK();
+        return view('pages.p5.groups', compact('groups', 'ptks'));
+    }
+
+    public function storeGroup(Request $request)
+    {
+        $request->validate(['name' => 'required']);
+        \App\Models\KokurikulerGroup::create($request->all());
+        return back()->with('success', 'Kelompok kokurikuler berhasil ditambahkan.');
+    }
+
+    public function storeActivity(Request $request)
+    {
+        $request->validate([
+            'group_id' => 'required|exists:kokurikuler_groups,id',
+            'theme' => 'required',
+            'activity_name' => 'required'
+        ]);
+        \App\Models\KokurikulerActivity::create($request->all());
+        return back()->with('success', 'Kegiatan berhasil ditambahkan.');
+    }
 }

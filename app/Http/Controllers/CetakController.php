@@ -38,6 +38,8 @@ class CetakController extends Controller
 
         $identity['headmaster_name'] = $settings['headmaster_name'] ?? '..........................';
         $identity['headmaster_nip'] = $settings['headmaster_nip'] ?? '-';
+        $identity['titimangsa_rapor'] = $settings['titimangsa_rapor'] ?? null;
+        $identity['koreg_unik'] = $settings['koreg_unik'] ?? null;
         
         return $identity;
     }
@@ -135,7 +137,19 @@ class CetakController extends Controller
                         ->where('peserta_didik_id', $peserta_didik_id)
                         ->first();
 
-        $pdf = Pdf::loadView('pages.cetak.print_rapor', compact('rombelData', 'siswaData', 'nilaiDb', 'mapels', 'sekolah', 'pelengkap', 'identity'))
+        $waliKelasId = $rombelData['ptk_id'] ?? null;
+        $waliKelasSignature = null;
+        if ($waliKelasId) {
+            $sigPath = Setting::where('key', 'signature_' . $waliKelasId)->value('value');
+            if ($sigPath && Storage::exists($sigPath)) {
+                $path = Storage::path($sigPath);
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $waliKelasSignature = 'data:image/' . $type . ';base64,' . base64_encode($data);
+            }
+        }
+
+        $pdf = Pdf::loadView('pages.cetak.print_rapor', compact('rombelData', 'siswaData', 'nilaiDb', 'mapels', 'sekolah', 'pelengkap', 'identity', 'waliKelasSignature'))
                   ->setPaper('a4', 'portrait');
 
         return $pdf->stream('Rapor_' . ($siswaData['nama'] ?? 'Siswa') . '.pdf');

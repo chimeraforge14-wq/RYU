@@ -39,7 +39,7 @@ class AuthController extends Controller
 
         // 1. Check Hardcoded Admin
         if ($username === 'administrator' && $password === 'administrator') {
-            session(['logged_in' => true, 'username' => 'administrator', 'role' => 'admin', 'nama' => 'Administrator']);
+            session(['logged_in' => true, 'username' => 'administrator', 'role' => 'superadmin', 'nama' => 'Super Administrator']);
             return redirect()->route('dashboard');
         }
 

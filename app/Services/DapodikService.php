@@ -134,7 +134,17 @@ class DapodikService
     public function getSekolah()
     {
         $data = $this->getLocalData();
-        return $data['sekolah'] ?? null;
+        $sekolah = $data['sekolah'] ?? null;
+
+        if (!$sekolah) return null;
+
+        // Apply School Overrides
+        $overrides = \App\Models\SchoolOverride::all();
+        foreach ($overrides as $override) {
+            $sekolah[$override->field_name] = $override->field_value;
+        }
+
+        return $sekolah;
     }
 
     /**
@@ -157,17 +167,18 @@ class DapodikService
         // Ambil pembelajaran manual
         $manuals = \App\Models\PembelajaranManual::all();
         
+        // Ambil rombel overrides
+        $rombelOverrides = \App\Models\RombelOverride::all();
+
         foreach ($rombels as &$rombel) {
             $rombelId = $rombel['rombongan_belajar_id'] ?? $rombel['id'];
             
-            // Cari pembelajaran manual untuk rombel ini
+            // 1. Handle Pembelajaran Manual
             $myManuals = $manuals->where('rombongan_belajar_id', $rombelId);
-            
             if ($myManuals->isNotEmpty()) {
                 if (!isset($rombel['pembelajaran'])) {
                     $rombel['pembelajaran'] = [];
                 }
-                
                 foreach ($myManuals as $m) {
                     $rombel['pembelajaran'][] = [
                         'pembelajaran_id' => 'manual-' . $m->id,
@@ -178,6 +189,40 @@ class DapodikService
                         'is_manual' => true
                     ];
                 }
+            }
+
+            // 2. Handle Rombel Member Overrides (Add/Remove/Transfer)
+            if (!isset($rombel['anggota_rombel'])) {
+                $rombel['anggota_rombel'] = [];
+            }
+
+            $myOverrides = $rombelOverrides->where('rombongan_belajar_id', $rombelId);
+            foreach ($myOverrides as $o) {
+                if ($o->action === 'add' || $o->action === 'transfer') {
+                    // Cek jika sudah ada
+                    $exists = collect($rombel['anggota_rombel'])->firstWhere('peserta_didik_id', $o->peserta_didik_id);
+                    if (!$exists) {
+                        $rombel['anggota_rombel'][] = [
+                            'peserta_didik_id' => $o->peserta_didik_id,
+                            'rombongan_belajar_id' => $rombelId,
+                            'is_manual' => true
+                        ];
+                    }
+                } elseif ($o->action === 'remove') {
+                    $rombel['anggota_rombel'] = collect($rombel['anggota_rombel'])
+                        ->filter(fn($ar) => $ar['peserta_didik_id'] !== $o->peserta_didik_id)
+                        ->values()
+                        ->toArray();
+                }
+            }
+
+            // Juga handle jika siswa di-remove dari rombel lain (transfer out)
+            $transferOut = $rombelOverrides->where('action', 'transfer')->where('from_rombongan_belajar_id', $rombelId);
+            foreach ($transferOut as $o) {
+                $rombel['anggota_rombel'] = collect($rombel['anggota_rombel'])
+                    ->filter(fn($ar) => $ar['peserta_didik_id'] !== $o->peserta_didik_id)
+                    ->values()
+                    ->toArray();
             }
         }
         
@@ -253,8 +298,23 @@ class DapodikService
     public function getPesertaDidik()
     {
         $data = $this->getLocalData();
-        return $data['pesertaDidik'] ?? [];
+        $siswas = $data['pesertaDidik'] ?? [];
+
+        // Apply Student Overrides
+        $overrides = \App\Models\StudentOverride::all()->groupBy('peserta_didik_id');
+        
+        foreach ($siswas as &$siswa) {
+            $pdId = $siswa['peserta_didik_id'];
+            if (isset($overrides[$pdId])) {
+                foreach ($overrides[$pdId] as $o) {
+                    $siswa[$o->field_name] = $o->field_value;
+                }
+            }
+        }
+
+        return $siswas;
     }
+
     /**
      * Find a user or PTK by username, email, or identity (NUPTK/NIK)
      */
@@ -285,4 +345,26 @@ class DapodikService
 
         return null;
     }
+
+    /**
+     * Get PTK who are Class Teachers (Wali Kelas)
+     */
+    public function getPTKClassTeachers()
+    {
+        $rombels = $this->getRombonganBelajar();
+        $ptks = $this->getPTK();
+        $ptkMap = collect($ptks)->keyBy('ptk_id');
+
+        $waliIds = collect($rombels)->pluck('ptk_id')->filter()->unique();
+        
+        $result = [];
+        foreach ($waliIds as $id) {
+            if ($ptkMap->has($id)) {
+                $result[] = $ptkMap->get($id);
+            }
+        }
+
+        return $result;
+    }
 }
+

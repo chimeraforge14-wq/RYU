@@ -76,7 +76,16 @@ class PelengkapRaporController extends Controller
 
             $rombelId = $request->rombongan_belajar_id;
 
+            $allSiswa = $this->dapodikService->getPesertaDidik();
+            $siswaMap = collect($allSiswa)->keyBy('peserta_didik_id');
+
             foreach ($request->data as $pdId => $val) {
+                $catatan = $val['catatan_wali_kelas'] ?? '';
+                if ($catatan && $siswaMap->has($pdId)) {
+                    $namaSiswa = $siswaMap->get($pdId)['nama'] ?? '';
+                    $catatan = str_replace('[NAMA]', $namaSiswa, $catatan);
+                }
+
                 PelengkapRapor::updateOrCreate(
                     [
                         'rombongan_belajar_id' => $rombelId,
@@ -86,7 +95,7 @@ class PelengkapRaporController extends Controller
                         'sakit' => $val['sakit'] ?? 0,
                         'izin' => $val['izin'] ?? 0,
                         'tanpa_keterangan' => $val['tanpa_keterangan'] ?? 0,
-                        'catatan_wali_kelas' => $val['catatan_wali_kelas'] ?? null,
+                        'catatan_wali_kelas' => $catatan,
                     ]
                 );
             }

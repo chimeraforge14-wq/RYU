@@ -13,18 +13,18 @@
 
 @section('content')
     <!-- Welcome Alert & Input Control -->
-    <div class="animate-slide-up" style="background: var(--accent-gradient); color: white; padding: 1.5rem 2rem; border-radius: 16px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2); flex-wrap: wrap; gap: 1rem;">
+    <div class="animate-slide-up" style="background: var(--accent-gradient); color: white; padding: 1.5rem 2rem; border-radius: var(--radius-xl); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.1); flex-wrap: wrap; gap: 1rem;">
         <div>
-            <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Selamat Datang di e-Rapor SD</h2>
-            <p style="opacity: 0.9;">Anda login sebagai <strong>{{ session('role') === 'admin' ? 'Administrator' : 'Guru' }}</strong>. Silakan gunakan menu di sebelah kiri untuk mengelola data.</p>
+            <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.3px;">Selamat Datang di e-Rapor SD</h2>
+            <p style="opacity: 0.85; font-size: 0.9rem;">Anda login sebagai <strong>{{ session('role') === 'superadmin' ? 'Super Administrator' : (session('role') === 'admin' ? 'Administrator' : 'Guru') }}</strong>. Silakan gunakan menu di sebelah kiri untuk mengelola data.</p>
         </div>
-        <div style="text-align: right; background: rgba(0,0,0,0.15); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-            <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem; text-align: center;">Status Input Nilai Guru</div>
-            <div style="display: flex; align-items: center; gap: 0.75rem; justify-content: center;">
-                <span style="width: 10px; height: 10px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; animation: pulse 2s infinite;"></span>
-                <span style="font-weight: 600; font-size: 1.1rem; letter-spacing: 1px;">TERBUKA</span>
-                @if(session('role') === 'admin')
-                <a href="#" style="color: white; text-decoration: none; font-size: 0.75rem; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 6px; margin-left: 0.5rem; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">Tutup</a>
+        <div style="text-align: right; background: rgba(0,0,0,0.2); padding: 0.85rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.1);">
+            <div style="font-size: 0.8rem; opacity: 0.85; margin-bottom: 0.4rem; text-align: center;">Status Input Nilai Guru</div>
+            <div style="display: flex; align-items: center; gap: 0.6rem; justify-content: center;">
+                <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; animation: pulse 2s infinite;"></span>
+                <span style="font-weight: 700; font-size: 1rem; letter-spacing: 1px;">TERBUKA</span>
+                @if(session('role') === 'admin' || session('role') === 'superadmin')
+                <a href="#" style="color: white; text-decoration: none; font-size: 0.7rem; background: rgba(255,255,255,0.15); padding: 0.2rem 0.6rem; border-radius: 6px; margin-left: 0.25rem; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">Tutup</a>
                 @endif
             </div>
         </div>
@@ -54,7 +54,7 @@
             </div>
         </div>
 
-        @if(session('role') === 'admin')
+        @if(session('role') === 'admin' || session('role') === 'superadmin')
         <!-- Widget 3: Guru -->
         <div class="stat-card">
             <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    @if(session('role') === 'admin')
+    @if(session('role') === 'admin' || session('role') === 'superadmin')
     <!-- Data Pengguna Table (Optional Preview) -->
     <div class="section-header animate-slide-up delay-2">
         <div>Daftar Pengguna Aktif (Preview)</div>

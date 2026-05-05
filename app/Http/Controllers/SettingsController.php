@@ -35,6 +35,12 @@ class SettingsController extends Controller
         if ($request->has('headmaster_nip')) {
             Setting::updateOrCreate(['key' => 'headmaster_nip'], ['value' => $request->headmaster_nip]);
         }
+        if ($request->has('koreg_unik')) {
+            Setting::updateOrCreate(['key' => 'koreg_unik'], ['value' => $request->koreg_unik]);
+        }
+        if ($request->has('titimangsa_rapor')) {
+            Setting::updateOrCreate(['key' => 'titimangsa_rapor'], ['value' => $request->titimangsa_rapor]);
+        }
 
         // Database Settings Update
         if ($request->has('db_host')) {

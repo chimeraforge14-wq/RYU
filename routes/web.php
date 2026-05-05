@@ -52,19 +52,65 @@ Route::middleware(['auth.custom'])->group(function () {
 
     // UI Feature Pages
     Route::get('/profile', [App\Http\Controllers\PageController::class, 'profile'])->name('profile');
+    Route::post('/profile/update', [App\Http\Controllers\PageController::class, 'updateProfile'])->name('profile.update');
+    // Admin Features
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/data-pengguna', [App\Http\Controllers\PageController::class, 'pengguna'])->name('pengguna');
+        
+        // Admin Log & Stats
+        Route::get('/admin/log', [App\Http\Controllers\AdminLogController::class, 'index'])->name('admin.log');
+
+        // Subject Management
+        Route::get('/mata-pelajaran', [App\Http\Controllers\SubjectController::class, 'index'])->name('subjects.index');
+        Route::post('/mata-pelajaran', [App\Http\Controllers\SubjectController::class, 'store'])->name('subjects.store');
+        Route::put('/mata-pelajaran/{id}', [App\Http\Controllers\SubjectController::class, 'update'])->name('subjects.update');
+        Route::delete('/mata-pelajaran/{id}', [App\Http\Controllers\SubjectController::class, 'destroy'])->name('subjects.destroy');
+        
+        // P5 Group Management (Admin)
+        Route::get('/kokurikuler/kelompok', [App\Http\Controllers\P5Controller::class, 'manageGroups'])->name('kokurikuler.groups');
+        Route::post('/kokurikuler/kelompok', [App\Http\Controllers\P5Controller::class, 'storeGroup'])->name('kokurikuler.groups.store');
+        Route::post('/kokurikuler/kegiatan', [App\Http\Controllers\P5Controller::class, 'storeActivity'])->name('kokurikuler.activities.store');
     });
+
+    // Superadmin Features
+    Route::middleware(['role:superadmin'])->group(function () {
+        // Student Identity & Rombel Transfer
+        Route::get('/peserta-didik', [App\Http\Controllers\StudentController::class, 'index'])->name('students.index');
+        Route::get('/peserta-didik/tambah', [App\Http\Controllers\StudentController::class, 'create'])->name('students.create');
+        Route::post('/peserta-didik/tambah', [App\Http\Controllers\StudentController::class, 'store'])->name('students.store');
+        Route::get('/peserta-didik/{id}/edit', [App\Http\Controllers\StudentController::class, 'edit'])->name('students.edit');
+        Route::post('/peserta-didik/{id}/update', [App\Http\Controllers\StudentController::class, 'update'])->name('students.update');
+        Route::get('/peserta-didik/{id}/rombel', [App\Http\Controllers\StudentController::class, 'manageRombel'])->name('students.rombel');
+        Route::post('/peserta-didik/{id}/rombel', [App\Http\Controllers\StudentController::class, 'updateRombel'])->name('students.rombel.update');
+
+        // Advanced Settings
+        Route::get('/pengaturan/super', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings.super');
+    });
+    
     Route::get('/referensi/kelas/anggota/{id}', [App\Http\Controllers\PageController::class, 'anggotaRombel'])->name('anggota_rombel');
     Route::get('/referensi/{type}', [App\Http\Controllers\PageController::class, 'referensi'])->name('referensi');
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/kokurikuler/perencanaan', [App\Http\Controllers\P5Controller::class, 'perencanaan'])->name('kokurikuler.perencanaan');
         Route::post('/kokurikuler/perencanaan', [App\Http\Controllers\P5Controller::class, 'storeProyek'])->name('kokurikuler.perencanaan.store');
+        
+        // P5 Group Management
+        Route::get('/kokurikuler/kelompok', [App\Http\Controllers\P5Controller::class, 'manageGroups'])->name('kokurikuler.groups');
+        Route::post('/kokurikuler/kelompok', [App\Http\Controllers\P5Controller::class, 'storeGroup'])->name('kokurikuler.groups.store');
+        Route::post('/kokurikuler/kegiatan', [App\Http\Controllers\P5Controller::class, 'storeActivity'])->name('kokurikuler.activities.store');
     });
     Route::get('/kokurikuler/penilaian', [App\Http\Controllers\P5Controller::class, 'penilaian'])->name('kokurikuler.penilaian');
     Route::post('/kokurikuler/penilaian', [App\Http\Controllers\P5Controller::class, 'storePenilaian'])->name('kokurikuler.penilaian.store');
     Route::get('/status-penilaian/{type}', [App\Http\Controllers\PageController::class, 'statusPenilaian'])->name('status_penilaian');
     Route::get('/perkembangan/{type}', [App\Http\Controllers\PageController::class, 'perkembangan'])->name('perkembangan');
+    
+    // TP/CP Routes
+    Route::get('/tp-cp', [App\Http\Controllers\TPController::class, 'index'])->name('tp.index');
+    Route::post('/tp-cp', [App\Http\Controllers\TPController::class, 'store'])->name('tp.store');
+    Route::get('/tp-scoring', [App\Http\Controllers\TPController::class, 'scoring'])->name('tp.scoring');
+    Route::post('/tp-scoring', [App\Http\Controllers\TPController::class, 'storeScores'])->name('tp.scores.store');
+    Route::get('/tp-export', [App\Http\Controllers\TPController::class, 'exportTemplate'])->name('tp.export');
+    Route::post('/tp-import', [App\Http\Controllers\TPController::class, 'import'])->name('tp.import');
+
     Route::get('/cetak/{type}', [App\Http\Controllers\CetakController::class, 'index'])->name('cetak');
     Route::get('/print/leger', [App\Http\Controllers\CetakController::class, 'printLeger'])->name('cetak.print_leger');
     Route::get('/print/rapor/{rombel_id}/{peserta_didik_id}', [App\Http\Controllers\CetakController::class, 'printRapor'])->name('cetak.print_rapor');

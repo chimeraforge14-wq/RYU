@@ -17,7 +17,7 @@ class RoleCheck
             return redirect()->route('login');
         }
 
-        if (session('role') !== $role && session('role') !== 'admin') {
+        if (session('role') !== $role && session('role') !== 'admin' && session('role') !== 'superadmin') {
             return abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
         }
 

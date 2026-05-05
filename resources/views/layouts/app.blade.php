@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1e293b">
+    <meta name="theme-color" content="#0a0f1a">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <title>@yield('title', 'Dashboard e-Rapor SD')</title>
+    @livewireStyles
     <style>
         {!! file_get_contents(resource_path('css/app.css')) !!}
     </style>
@@ -38,7 +39,21 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 Profile
             </a></li>
-            @if(session('role') === 'admin')
+            @if(session('role') === 'admin' || session('role') === 'superadmin')
+            <li><a href="{{ route('admin.log') }}" class="nav-link {{ request()->routeIs('admin.log') ? 'active' : '' }}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20v-6M6 20V10M18 20V4"></path></svg>
+                Log Statistik & Dashboard
+            </a></li>
+            @endif
+
+            @if(session('role') === 'superadmin')
+            <li><a href="{{ route('students.index') }}" class="nav-link {{ request()->routeIs('students.*') ? 'active' : '' }}">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Kelola Peserta Didik
+            </a></li>
+            @endif
+
+            @if(session('role') === 'admin' || session('role') === 'superadmin')
             <li><a href="{{ route('sync') }}" class="nav-link {{ request()->routeIs('sync') ? 'active' : '' }}">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 14.3-11.4l-3.2 3.1"></path></svg>
                 Ambil Data Dapodik
@@ -50,10 +65,6 @@
             <li><a href="{{ route('pengguna') }}" class="nav-link {{ request()->routeIs('pengguna') ? 'active' : '' }}">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 Data Pengguna
-            </a></li>
-            <li><a href="{{ route('database.manage') }}" class="nav-link {{ request()->routeIs('database.manage') ? 'active' : '' }}">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
-                Kelola Database
             </a></li>
             @endif
             
@@ -71,6 +82,9 @@
                     <li><a href="{{ route('siswa') }}">Data Siswa</a></li>
                     <li><a href="{{ route('referensi', 'kelas') }}">Data Kelas</a></li>
                     <li><a href="{{ route('referensi', 'mapel') }}">Data Mata Pelajaran</a></li>
+                    @if(session('role') === 'admin' || session('role') === 'superadmin')
+                    <li><a href="{{ route('subjects.index') }}" style="color: var(--accent);">Mapel Manual/Lokal</a></li>
+                    @endif
                     <li><a href="{{ route('referensi', 'pembelajaran') }}">Data Pembelajaran</a></li>
                     <li><a href="{{ route('referensi', 'ekstrakurikuler') }}">Data Ekstrakurikuler</a></li>
                 </ul>
@@ -83,7 +97,8 @@
                     <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </a>
                 <ul class="submenu">
-                    @if(session('role') === 'admin')
+                    @if(session('role') === 'admin' || session('role') === 'superadmin')
+                    <li><a href="{{ route('kokurikuler.groups') }}" style="color: var(--accent);">Kelompok & Koordinator</a></li>
                     <li><a href="{{ route('kokurikuler.perencanaan') }}">Perencanaan P5</a></li>
                     @endif
                     <li><a href="{{ route('kokurikuler.penilaian') }}">Penilaian P5</a></li>
@@ -121,6 +136,8 @@
                     <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </a>
                 <ul class="submenu">
+                    <li><a href="{{ route('tp.index') }}" style="color: var(--accent);">Input Tujuan Pembelajaran</a></li>
+                    <li><a href="{{ route('tp.scoring') }}" style="color: var(--accent);">Input Nilai TP/CP</a></li>
                     <li><a href="{{ route('nilai') }}" class="{{ request()->routeIs('nilai') ? 'active' : '' }}">Input Nilai Rapor</a></li>
                     <li><a href="{{ route('pelengkap_rapor') }}" class="{{ request()->routeIs('pelengkap_rapor') ? 'active' : '' }}">Input Absensi & Catatan</a></li>
                     <li><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin: 0.5rem 0;"></li>
@@ -136,7 +153,7 @@
                 Backup & Kirim Data
             </a></li>
 
-            @if(session('role') === 'admin')
+            @if(session('role') === 'admin' || session('role') === 'superadmin')
             <li><a href="{{ route('kirim_dapodik') }}" class="nav-link">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-12.28l5.08 5.08"></path></svg>
                 Kirim Nilai Ke Dapodik
@@ -236,5 +253,6 @@
             });
         }
     </script>
+    @livewireScripts
 </body>
 </html>

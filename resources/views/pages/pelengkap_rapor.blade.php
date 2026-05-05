@@ -6,7 +6,7 @@
 
 @section('content')
     <!-- Filter Section -->
-    @if(count($rombonganBelajar) > 1 || session('role') === 'admin')
+    @if(count($rombonganBelajar) > 1 || session('role') === 'admin' || session('role') === 'superadmin')
     <div class="stat-card animate-slide-up" style="margin-bottom: 2rem; padding: 1.5rem; display: flex; gap: 1rem; align-items: flex-end;">
         <div style="flex: 2;">
             <label style="display: block; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Pilih Rombongan Belajar (Kelas)</label>

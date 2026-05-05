@@ -11,6 +11,7 @@
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
+        "livewire/livewire": "^4.3",
         "nativephp/electron": "0.7",
         "tightenco/ziggy": "^2.6"
     },
