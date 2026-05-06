@@ -42,8 +42,8 @@
                             </div>
                             <div style="flex: 1; min-width: 220px;">
                                 <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px;">Tanda Tangan (Khusus Wali Kelas)</label>
-                                <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Akan ditampilkan di Rapor. PNG transparan disarankan.</p>
-                                <input type="file" name="signature" style="font-size: 0.8rem; color: var(--text-secondary);">
+                                <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Akan ditampilkan di Rapor. Gambar (PNG/JPG/SVG/WEBP) transparan disarankan.</p>
+                                <input type="file" name="signature" accept="image/*" style="font-size: 0.8rem; color: var(--text-secondary);">
                             </div>
                         </div>
                         <button type="submit" style="background: var(--accent-gradient); color: white; border: none; padding: 0.65rem 2rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 12px rgba(99,102,241,0.3);">

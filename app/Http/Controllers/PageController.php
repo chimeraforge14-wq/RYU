@@ -27,7 +27,7 @@ class PageController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'signature' => 'nullable|image|mimes:png,jpg,jpeg|max:2048'
+            'signature' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048'
         ]);
 
         $username = session('username');
@@ -195,6 +195,18 @@ class PageController extends Controller
         $title = $type == 'input' ? 'Status Input Nilai' : 'Pencapaian Kompetensi';
         
         $rombels = $this->dapodikService->getFilteredRombonganBelajar(session('ptk_id'), session('role'));
+        
+        $rombelIds = collect($rombels)->map(function($r) { return $r['rombongan_belajar_id'] ?? $r['id'] ?? null; })->filter()->unique()->toArray();
+        
+        $nilaiCounts = \App\Models\Nilai::whereIn('rombongan_belajar_id', $rombelIds)
+            ->whereNotNull('nilai_akhir')
+            ->selectRaw('rombongan_belajar_id, mata_pelajaran_id, count(*) as total')
+            ->groupBy('rombongan_belajar_id', 'mata_pelajaran_id')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->rombongan_belajar_id . '_' . $item->mata_pelajaran_id => $item->total];
+            });
+
         $statusData = [];
 
         foreach ($rombels as $rombel) {
@@ -208,11 +220,8 @@ class PageController extends Controller
                     // Ambil nama guru, coba beberapa kemungkinan key dari Dapodik
                     $namaGuru = $p['ptk_id_str'] ?? $p['nama_guru'] ?? $rombel['ptk_id_str'] ?? '-';
                     
-                    // Hitung jumlah nilai yang sudah terisi di DB
-                    $terisi = \App\Models\Nilai::where('rombongan_belajar_id', $rombelId)
-                                ->where('mata_pelajaran_id', $mapelId)
-                                ->whereNotNull('nilai_akhir')
-                                ->count();
+                    // Hitung jumlah nilai yang sudah terisi di DB (diambil dari memori untuk optimasi)
+                    $terisi = $nilaiCounts->get($rombelId . '_' . $mapelId, 0);
                     
                     $statusData[] = [
                         'rombel' => $rombel['nama'],

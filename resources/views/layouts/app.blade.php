@@ -75,7 +75,7 @@
                     <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </a>
                 <ul class="submenu">
-                    @if(session('role') === 'admin')
+                    @if(session('role') === 'admin' || session('role') === 'superadmin')
                     <li><a href="{{ route('referensi', 'sekolah') }}">Data Sekolah</a></li>
                     <li><a href="{{ route('guru') }}">Data Guru</a></li>
                     @endif

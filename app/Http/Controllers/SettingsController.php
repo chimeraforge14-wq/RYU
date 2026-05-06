@@ -16,6 +16,12 @@ class SettingsController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'school_logo' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'headmaster_signature' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'school_stamp' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+        ]);
+
         $keys = ['school_logo', 'headmaster_signature', 'school_stamp'];
         
         foreach ($keys as $key) {

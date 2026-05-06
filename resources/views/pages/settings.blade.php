@@ -29,8 +29,8 @@
                 </div>
                 <div style="flex: 1; min-width: 220px;">
                     <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px;">Logo Sekolah</label>
-                    <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">PNG/JPG, Maks 2MB. Latar transparan disarankan.</p>
-                    <input type="file" name="school_logo" style="font-size: 0.8rem; color: var(--text-secondary);">
+                    <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Gambar (PNG/JPG/SVG/WEBP), Maks 2MB. Latar transparan disarankan.</p>
+                    <input type="file" name="school_logo" accept="image/*" style="font-size: 0.8rem; color: var(--text-secondary);">
                 </div>
             </div>
 
@@ -57,8 +57,8 @@
                 </div>
                 <div style="flex: 1; min-width: 220px;">
                     <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px;">Tanda Tangan Kepala Sekolah</label>
-                    <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">PNG transparan disarankan.</p>
-                    <input type="file" name="headmaster_signature" style="font-size: 0.8rem; color: var(--text-secondary);">
+                    <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Gambar (PNG/JPG/SVG/WEBP) transparan disarankan.</p>
+                    <input type="file" name="headmaster_signature" accept="image/*" style="font-size: 0.8rem; color: var(--text-secondary);">
                 </div>
             </div>
         </div>

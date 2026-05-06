@@ -44,8 +44,8 @@
         .box { border: 1px solid black; padding: 8px; height: 60px; }
 
         /* Tanda Tangan */
-        .signature-table { width: 100%; margin-top: 20px; font-size: 9pt; }
-        .signature-table td { width: 33%; text-align: center; vertical-align: top; }
+        .signature-table { width: 100%; margin-top: 20px; font-size: 9pt; page-break-inside: avoid; }
+        .signature-table td { text-align: center; vertical-align: top; }
     </style>
 </head>
 <body>
@@ -65,8 +65,8 @@
                 <div class="cop-school-name">{{ $sekolah['nama'] ?? 'NAMA SEKOLAH' }}</div>
                 <div class="cop-address">
                     {{ $sekolah['alamat_jalan'] ?? '' }} {{ $sekolah['desa_kelurahan'] ?? '' }}<br>
-                    Kecamatan {{ $sekolah['kecamatan'] ?? '' }}, {{ $sekolah['kabupaten_kota'] ?? '' }}<br>
-                    NPSN: {{ $sekolah['npsn'] ?? '-' }} | Kode Registrasi: {{ $identity['koreg_unik'] ?? '-' }}
+                    {{ $sekolah['kecamatan'] ?? '' }}, {{ $sekolah['kabupaten_kota'] ?? '' }}<br>
+                    NPSN: {{ !empty($sekolah['npsn']) ? $sekolah['npsn'] : '-' }} | Kode Registrasi: {{ !empty($identity['koreg_unik']) ? $identity['koreg_unik'] : '-' }}
                 </div>
             </td>
         </tr>
@@ -82,12 +82,16 @@
             <td width="15%">Kelas</td><td width="2%">:</td><td width="18%">{{ $rombelData['nama'] ?? '-' }}</td>
         </tr>
         <tr>
-            <td>NISN</td><td>:</td><td>{{ $siswaData['nisn'] ?? '-' }}</td>
-            <td>Fase</td><td>:</td><td>{{ $rombelData['fase'] ?? '-' }}</td>
+            <td>NIS / NISN</td><td>:</td><td>{{ !empty($siswaData['nipd']) ? $siswaData['nipd'] : '-' }} / {{ !empty($siswaData['nisn']) ? $siswaData['nisn'] : '-' }}</td>
+            <td>Fase</td><td>:</td><td>{{ !empty($rombelData['fase']) ? $rombelData['fase'] : '-' }}</td>
         </tr>
         <tr>
             <td>Sekolah</td><td>:</td><td>{{ $sekolah['nama'] ?? '-' }}</td>
             <td>Semester</td><td>:</td><td>{{ $identity['semester'] ?? 'Ganjil' }}</td>
+        </tr>
+        <tr>
+            <td>Alamat Sekolah</td><td>:</td><td>{{ $sekolah['alamat_jalan'] ?? '-' }}</td>
+            <td>Tahun Pelajaran</td><td>:</td><td>{{ $identity['tahun_pelajaran'] ?? '-' }}</td>
         </tr>
     </table>
 
@@ -142,18 +146,9 @@
                 Mengetahui,<br>Orang Tua/Wali<br><br><br><br><br>
                 ..........................................
             </td>
-            <td width="33%" style="position: relative;">
-                Kepala Sekolah,<br>
-                <div style="height: 60px; margin-top: 5px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center;">
-                    @if($identity['headmaster_signature'])
-                        <img src="{{ $identity['headmaster_signature'] }}" style="height: 60px; max-width: 150px;">
-                    @endif
-                </div>
-                <span class="text-bold" style="text-decoration: underline;">{{ $identity['headmaster_name'] }}</span><br>
-                NIP. {{ $identity['headmaster_nip'] }}
-            </td>
+            <td width="33%"></td>
             <td width="33%">
-                {{ $sekolah['kabupaten_kota'] ?? '..........' }}, {{ $identity['titimangsa_rapor'] ?? date('d F Y') }}<br>
+                {{ $sekolah['kabupaten_kota'] ?? '..........' }}, {{ \Carbon\Carbon::parse($identity['titimangsa_rapor'] ?? date('Y-m-d'))->locale('id')->translatedFormat('d F Y') }}<br>
                 Wali Kelas,<br>
                 <div style="height: 60px; margin-top: 5px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center;">
                     @if(isset($waliKelasSignature) && $waliKelasSignature)
@@ -163,7 +158,21 @@
                     @endif
                 </div>
                 <span class="text-bold" style="text-decoration: underline;">{{ $rombelData['ptk_id_str'] ?? '..........................................' }}</span><br>
-                NIP. {{ $rombelData['ptk_nip'] ?? '-' }}
+                NIP. {{ !empty($rombelData['ptk_nip']) ? $rombelData['ptk_nip'] : '-' }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="padding-top: 20px;">
+                Mengetahui,<br>Kepala Sekolah,<br>
+                <div style="height: 60px; margin-top: 5px; margin-bottom: 5px; display: flex; align-items: center; justify-content: center;">
+                    @if(isset($identity['headmaster_signature']) && $identity['headmaster_signature'])
+                        <img src="{{ $identity['headmaster_signature'] }}" style="height: 60px; max-width: 150px;">
+                    @else
+                        <br><br><br>
+                    @endif
+                </div>
+                <span class="text-bold" style="text-decoration: underline;">{{ $identity['headmaster_name'] ?? '..........................................' }}</span><br>
+                NIP. {{ !empty($identity['headmaster_nip']) ? $identity['headmaster_nip'] : '-' }}
             </td>
         </tr>
     </table>

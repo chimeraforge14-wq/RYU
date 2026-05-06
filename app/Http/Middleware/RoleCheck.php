@@ -17,7 +17,20 @@ class RoleCheck
             return redirect()->route('login');
         }
 
-        if (session('role') !== $role && session('role') !== 'admin' && session('role') !== 'superadmin') {
+        $userRole = session('role');
+        $allowedRoles = [];
+
+        if ($role === 'superadmin') {
+            $allowedRoles = ['superadmin'];
+        } elseif ($role === 'admin') {
+            $allowedRoles = ['admin', 'superadmin'];
+        } elseif ($role === 'guru') {
+            $allowedRoles = ['guru', 'admin', 'superadmin'];
+        } else {
+            $allowedRoles = [$role];
+        }
+
+        if (!in_array($userRole, $allowedRoles)) {
             return abort(403, 'Anda tidak memiliki hak akses untuk halaman ini.');
         }
 

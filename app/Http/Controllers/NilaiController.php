@@ -29,7 +29,9 @@ class NilaiController extends Controller
         }
 
         $rombonganBelajar = $this->dapodikService->getRombonganBelajar();
-        $rombelData = collect($rombonganBelajar)->firstWhere('rombongan_belajar_id', $rombelId);
+        $rombelData = collect($rombonganBelajar)->first(function($r) use ($rombelId) {
+            return ($r['rombongan_belajar_id'] ?? $r['id'] ?? null) == $rombelId;
+        });
         
         $mapels = [];
         $ptkId = session('ptk_id');
@@ -47,7 +49,7 @@ class NilaiController extends Controller
                 $subjectTeacherId = $p['ptk_id'] ?? '';
                 
                 $showMapel = false;
-                if ($role === 'admin') {
+                if ($role === 'admin' || $role === 'superadmin') {
                     $showMapel = true;
                 } else if ($ptkId && $subjectTeacherId === $ptkId) {
                     $showMapel = true;
@@ -106,7 +108,9 @@ class NilaiController extends Controller
             $siswaDalamRombel = [];
             
             // Cari rombel terpilih
-            $rombelData = collect($rombonganBelajar)->firstWhere('rombongan_belajar_id', $rombelId);
+            $rombelData = collect($rombonganBelajar)->first(function($r) use ($rombelId) {
+                return ($r['rombongan_belajar_id'] ?? $r['id'] ?? null) == $rombelId;
+            });
             
             if ($rombelData && isset($rombelData['anggota_rombel'])) {
                 foreach ($rombelData['anggota_rombel'] as $ar) {
@@ -168,22 +172,24 @@ class NilaiController extends Controller
             return response()->json(['success' => false, 'message' => 'Rombel atau Mapel tidak valid.']);
         }
 
-        foreach ($grades as $pesertaDidikId => $data) {
-            Nilai::updateOrCreate(
-                [
-                    'rombongan_belajar_id' => $rombelId,
-                    'mata_pelajaran_id' => $mapelId,
-                    'peserta_didik_id' => $pesertaDidikId
-                ],
-                [
-                    'nilai_tp1' => $data['tp1'] ?? null,
-                    'nilai_tp2' => $data['tp2'] ?? null,
-                    'nilai_sas' => $data['sas'] ?? null,
-                    'nilai_akhir' => $data['akhir'] ?? null,
-                    'deskripsi_capaian' => $data['deskripsi'] ?? null
-                ]
-            );
-        }
+        \Illuminate\Support\Facades\DB::transaction(function () use ($grades, $rombelId, $mapelId) {
+            foreach ($grades as $pesertaDidikId => $data) {
+                Nilai::updateOrCreate(
+                    [
+                        'rombongan_belajar_id' => $rombelId,
+                        'mata_pelajaran_id' => $mapelId,
+                        'peserta_didik_id' => $pesertaDidikId
+                    ],
+                    [
+                        'nilai_tp1' => $data['tp1'] ?? null,
+                        'nilai_tp2' => $data['tp2'] ?? null,
+                        'nilai_sas' => $data['sas'] ?? null,
+                        'nilai_akhir' => $data['akhir'] ?? null,
+                        'deskripsi_capaian' => $data['deskripsi'] ?? null
+                    ]
+                );
+            }
+        });
 
         return response()->json(['success' => true, 'message' => 'Nilai berhasil disimpan otomatis ke Database!']);
     }
