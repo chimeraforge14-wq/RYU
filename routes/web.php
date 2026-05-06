@@ -6,6 +6,49 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SyncController;
 use App\Http\Controllers\NilaiController;
 
+// ── Storage File Proxy ──────────────────────────────────────────────────────
+// Gunakan query string (?p=path) agar slash di path tidak dipotong Laravel
+Route::get('/sf', function (\Illuminate\Http\Request $request) {
+    $path     = $request->query('p', '');
+    $fullPath = storage_path('app/public/' . ltrim($path, '/'));
+
+    if (!$path || !file_exists($fullPath)) {
+        abort(404, 'File not found: ' . $fullPath);
+    }
+
+    $ext  = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+    $mime = match($ext) {
+        'jpg', 'jpeg' => 'image/jpeg',
+        'png'         => 'image/png',
+        'webp'        => 'image/webp',
+        'svg'         => 'image/svg+xml',
+        'gif'         => 'image/gif',
+        default       => 'application/octet-stream',
+    };
+
+    return response()->file($fullPath, ['Content-Type' => $mime]);
+})->name('storage.file');
+
+// Debug: cek status file identitas sekolah
+Route::get('/debug-identity', function () {
+    $settings = \App\Models\Setting::pluck('value', 'key');
+    $result   = [];
+    foreach (['school_logo', 'headmaster_signature'] as $key) {
+        $val      = $settings[$key] ?? null;
+        $fullPath = $val ? storage_path('app/public/' . ltrim(str_replace('public/', '', $val), '/')) : null;
+        $result[$key] = [
+            'db_value'   => $val,
+            'full_path'  => $fullPath,
+            'file_exists'=> $fullPath ? file_exists($fullPath) : false,
+            'proxy_url'  => $val ? url('/sf?p=' . ltrim(str_replace('public/', '', $val), '/')) : null,
+        ];
+    }
+    $result['gd_loaded']         = extension_loaded('gd');
+    $result['storage_app_public']= storage_path('app/public');
+    return response()->json($result, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+});
+
+
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -93,19 +136,23 @@ Route::middleware(['auth.custom'])->group(function () {
         Route::get('/kokurikuler/perencanaan', [App\Http\Controllers\P5Controller::class, 'perencanaan'])->name('kokurikuler.perencanaan');
         Route::post('/kokurikuler/perencanaan', [App\Http\Controllers\P5Controller::class, 'storeProyek'])->name('kokurikuler.perencanaan.store');
         
-        // P5 Group Management
-        Route::get('/kokurikuler/kelompok', [App\Http\Controllers\P5Controller::class, 'manageGroups'])->name('kokurikuler.groups');
-        Route::post('/kokurikuler/kelompok', [App\Http\Controllers\P5Controller::class, 'storeGroup'])->name('kokurikuler.groups.store');
-        Route::post('/kokurikuler/kegiatan', [App\Http\Controllers\P5Controller::class, 'storeActivity'])->name('kokurikuler.activities.store');
+        // Kokurikuler Admin Management
+        Route::get('/kokurikuler/kelola', [App\Http\Controllers\KokurikulerController::class, 'index'])->name('kokurikuler.index');
+        Route::post('/kokurikuler/kelola/grup', [App\Http\Controllers\KokurikulerController::class, 'storeGroup'])->name('kokurikuler.store_group');
+        Route::post('/kokurikuler/kelola/aktivitas', [App\Http\Controllers\KokurikulerController::class, 'storeActivity'])->name('kokurikuler.store_activity');
+        Route::delete('/kokurikuler/kelola/grup/{id}', [App\Http\Controllers\KokurikulerController::class, 'destroyGroup'])->name('kokurikuler.destroy_group');
     });
-    Route::get('/kokurikuler/penilaian', [App\Http\Controllers\P5Controller::class, 'penilaian'])->name('kokurikuler.penilaian');
-    Route::post('/kokurikuler/penilaian', [App\Http\Controllers\P5Controller::class, 'storePenilaian'])->name('kokurikuler.penilaian.store');
+
+    // Kokurikuler Penilaian (guru juga bisa akses)
+    Route::get('/kokurikuler/penilaian', [App\Http\Controllers\KokurikulerController::class, 'penilaian'])->name('kokurikuler.penilaian');
+    Route::post('/kokurikuler/penilaian', [App\Http\Controllers\KokurikulerController::class, 'storePenilaian'])->name('kokurikuler.penilaian.store');
     Route::get('/status-penilaian/{type}', [App\Http\Controllers\PageController::class, 'statusPenilaian'])->name('status_penilaian');
     Route::get('/perkembangan/{type}', [App\Http\Controllers\PageController::class, 'perkembangan'])->name('perkembangan');
-    
+
     // TP/CP Routes
     Route::get('/tp-cp', [App\Http\Controllers\TPController::class, 'index'])->name('tp.index');
     Route::post('/tp-cp', [App\Http\Controllers\TPController::class, 'store'])->name('tp.store');
+    Route::delete('/tp-cp/{id}', [App\Http\Controllers\TPController::class, 'destroy'])->name('tp.destroy');
     Route::get('/tp-scoring', [App\Http\Controllers\TPController::class, 'scoring'])->name('tp.scoring');
     Route::post('/tp-scoring', [App\Http\Controllers\TPController::class, 'storeScores'])->name('tp.scores.store');
     Route::get('/tp-export', [App\Http\Controllers\TPController::class, 'exportTemplate'])->name('tp.export');
@@ -114,6 +161,8 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::get('/cetak/{type}', [App\Http\Controllers\CetakController::class, 'index'])->name('cetak');
     Route::get('/print/leger', [App\Http\Controllers\CetakController::class, 'printLeger'])->name('cetak.print_leger');
     Route::get('/print/rapor/{rombel_id}/{peserta_didik_id}', [App\Http\Controllers\CetakController::class, 'printRapor'])->name('cetak.print_rapor');
+    Route::get('/print/rapor-massal/{rombel_id}', [App\Http\Controllers\CetakController::class, 'printRaporMassal'])->name('cetak.print_massal');
+    Route::get('/export/leger-excel', [App\Http\Controllers\CetakController::class, 'exportLegerExcel'])->name('cetak.leger_excel');
     // Utility Routes (Accessible by both)
     Route::get('/backup-restore', [App\Http\Controllers\PageController::class, 'utility'])->name('backup');
     Route::get('/backup/export', [App\Http\Controllers\PageController::class, 'exportData'])->name('backup.export');

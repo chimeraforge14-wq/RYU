@@ -17,20 +17,18 @@ class SettingsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'school_logo' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
-            'headmaster_signature' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
-            'school_stamp' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'school_logo'          => 'nullable|image|mimes:png|max:2048',
+            'headmaster_signature' => 'nullable|image|mimes:png|max:2048',
+            'school_stamp'         => 'nullable|image|mimes:png|max:2048',
         ]);
 
-        $keys = ['school_logo', 'headmaster_signature', 'school_stamp'];
-        
-        foreach ($keys as $key) {
-            if ($request->hasFile($key)) {
-                $file = $request->file($key);
-                $path = $file->store('public/identity');
-                
-                // Save path to DB
-                Setting::updateOrCreate(['key' => $key], ['value' => $path]);
+        // Simpan gambar sebagai base64 langsung ke DB (bypass file system)
+        $imageKeys = ['school_logo', 'headmaster_signature', 'school_stamp'];
+        foreach ($imageKeys as $key) {
+            if ($request->hasFile($key) && $request->file($key)->isValid()) {
+                $file    = $request->file($key);
+                $base64  = 'data:image/png;base64,' . base64_encode(file_get_contents($file->getRealPath()));
+                Setting::updateOrCreate(['key' => $key], ['value' => $base64]);
             }
         }
 
@@ -46,6 +44,12 @@ class SettingsController extends Controller
         }
         if ($request->has('titimangsa_rapor')) {
             Setting::updateOrCreate(['key' => 'titimangsa_rapor'], ['value' => $request->titimangsa_rapor]);
+        }
+        if ($request->has('semester_aktif')) {
+            Setting::updateOrCreate(['key' => 'semester_aktif'], ['value' => $request->semester_aktif]);
+        }
+        if ($request->has('tahun_pelajaran')) {
+            Setting::updateOrCreate(['key' => 'tahun_pelajaran'], ['value' => $request->tahun_pelajaran]);
         }
 
         // Database Settings Update

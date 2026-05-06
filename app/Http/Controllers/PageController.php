@@ -27,22 +27,26 @@ class PageController extends Controller
     public function updateProfile(Request $request)
     {
         $request->validate([
-            'signature' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048'
+            'signature' => 'nullable|image|mimes:png|max:2048'
         ]);
 
-        $username = session('username');
-        $ptk_id = session('ptk_id');
+        $username      = session('username');
+        $ptk_id        = session('ptk_id');
         $signature_key = $ptk_id ? "signature_{$ptk_id}" : "signature_{$username}";
 
-        if ($request->hasFile('signature')) {
-            $path = $request->file('signature')->store('public/signatures');
+        if ($request->hasFile('signature') && $request->file('signature')->isValid()) {
+            $file   = $request->file('signature');
+            $base64 = 'data:image/png;base64,' . base64_encode(file_get_contents($file->getRealPath()));
+
             \App\Models\Setting::updateOrCreate(
                 ['key' => $signature_key],
-                ['value' => $path]
+                ['value' => $base64]
             );
+
+            return back()->with('success', 'Tanda tangan berhasil disimpan!');
         }
 
-        return back()->with('success', 'Profil berhasil diperbarui!');
+        return back()->with('info', 'Tidak ada file yang diupload.');
     }
 
     public function pengguna()
@@ -304,6 +308,11 @@ class PageController extends Controller
     {
         $lastBackup = session('last_backup_time', 'Belum pernah');
         return view('pages.utility', compact('lastBackup'));
+    }
+
+    public function kirimDapodik()
+    {
+        return view('pages.kirim_dapodik');
     }
 
     public function exportData()

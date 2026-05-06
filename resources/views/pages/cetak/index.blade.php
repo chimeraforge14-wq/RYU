@@ -39,16 +39,27 @@
         @endif
     </div>
 
-    <!-- Container for Leger / Nilai list -->
     <div id="cetakContainer" class="table-container animate-slide-up delay-1" style="display: none; overflow-x: auto;">
-        <div style="padding: 1rem 1.5rem; background: rgba(59, 130, 246, 0.1); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
+        <div style="padding: 1rem 1.5rem; background: rgba(59, 130, 246, 0.1); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
             <div style="font-weight: 600; color: #60a5fa;" id="tableTitle">Daftar Cetak</div>
-            @if($type === 'leger')
-            <button id="printLegerBtn" onclick="printLeger()" style="padding: 0.5rem 1rem; border-radius: 6px; background: #8b5cf6; color: white; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                Cetak Leger Kelas
-            </button>
-            @endif
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                @if($type === 'leger')
+                <button id="printLegerBtn" onclick="printLeger()" style="padding: 0.5rem 1rem; border-radius: 6px; background: #8b5cf6; color: white; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    Cetak Leger PDF
+                </button>
+                <button id="exportExcelBtn" onclick="exportExcel()" style="padding: 0.5rem 1rem; border-radius: 6px; background: linear-gradient(135deg,#10b981,#059669); color: white; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export Excel (CSV)
+                </button>
+                @endif
+                @if($type === 'nilai')
+                <button id="printMassalBtn" onclick="printMassal()" style="padding: 0.5rem 1rem; border-radius: 6px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Unduh Semua Rapor (ZIP)
+                </button>
+                @endif
+            </div>
         </div>
         
         <table style="width: 100%;">
@@ -160,5 +171,58 @@
             const url = `{{ route('cetak.print_leger') }}?rombongan_belajar_id=${rombelId}`;
             window.open(url, '_blank');
         }
+
+        function exportExcel() {
+            const rombelId = document.getElementById('rombelSelect').value;
+            if (!rombelId) { alert('Pilih kelas terlebih dahulu!'); return; }
+            const url = `{{ route('cetak.leger_excel') }}?rombongan_belajar_id=${rombelId}`;
+            window.location.href = url;
+        }
+
+        function printMassal() {
+            const rombelId = document.getElementById('rombelSelect').value;
+            if (!rombelId) { alert('Pilih kelas terlebih dahulu!'); return; }
+
+            const btn = document.getElementById('printMassalBtn');
+            const originalHtml = btn ? btn.innerHTML : '';
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0"/></svg> Membuat ZIP...`;
+            }
+
+            const url = `{{ url('/print/rapor-massal') }}/${rombelId}`;
+
+            // Gunakan fetch untuk bisa mendeteksi error dari server
+            fetch(url, { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(async response => {
+                    if (!response.ok) {
+                        // Server mengembalikan error JSON
+                        const errData = await response.json().catch(() => ({}));
+                        throw new Error(errData.error || `Server error: ${response.status}`);
+                    }
+                    // Sukses — buat blob dan trigger download
+                    return response.blob();
+                })
+                .then(blob => {
+                    const downloadUrl = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = `Rapor_Massal.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(downloadUrl);
+                })
+                .catch(err => {
+                    alert('Gagal mengunduh ZIP:\n' + err.message);
+                })
+                .finally(() => {
+                    if (btn) { btn.disabled = false; btn.innerHTML = originalHtml; }
+                });
+        }
     </script>
+    <style>
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
 @endsection

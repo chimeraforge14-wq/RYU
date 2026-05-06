@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class DapodikService
 {
@@ -98,6 +99,7 @@ class DapodikService
             ];
 
             Storage::disk('local')->put('dapodik_data.json', json_encode($data));
+            Cache::forget('dapodik_local_data'); // Invalidate cache setelah sync
             
             $msg = 'Tes Koneksi Dapodik Berhasil! Data ditarik pada ' . $data['last_sync'];
             if (!empty($this->fetchErrors)) {
@@ -117,15 +119,17 @@ class DapodikService
     }
 
     /**
-     * Read local synced data
+     * Read local synced data (cached for 30 minutes)
      */
     protected function getLocalData()
     {
-        if (Storage::disk('local')->exists('dapodik_data.json')) {
-            $content = Storage::disk('local')->get('dapodik_data.json');
-            return json_decode($content, true);
-        }
-        return null;
+        return Cache::remember('dapodik_local_data', 1800, function () {
+            if (Storage::disk('local')->exists('dapodik_data.json')) {
+                $content = Storage::disk('local')->get('dapodik_data.json');
+                return json_decode($content, true);
+            }
+            return null;
+        });
     }
 
     /**
@@ -145,6 +149,49 @@ class DapodikService
         }
 
         return $sekolah;
+    }
+
+    /**
+     * Get semester info (label + tahun pelajaran) dari data Dapodik yang tersimpan
+     * Semester ID Dapodik: 1 = Ganjil, 2 = Genap
+     */
+    public function getSemesterInfo(): array
+    {
+        $data = $this->getLocalData();
+
+        // Ambil semester ID dari data sync (disimpan saat sync)
+        $semesterId = $data['semester'] ?? null;
+
+        // Konversi ID ke label
+        $semesterLabel = match((string)$semesterId) {
+            '1'     => 'Ganjil',
+            '2'     => 'Genap',
+            default => $semesterId ?? '-',
+        };
+
+        // Coba ambil tahun pelajaran dari data sekolah Dapodik
+        $sekolah        = $data['sekolah'] ?? [];
+        $tahunPelajaran = $sekolah['tahun_pelajaran'] ?? null;
+
+        // Jika tidak ada di sekolah, coba generate dari last_sync
+        if (!$tahunPelajaran && isset($data['last_sync'])) {
+            try {
+                $syncDate = \Carbon\Carbon::parse($data['last_sync']);
+                $year     = (int)$syncDate->format('Y');
+                $month    = (int)$syncDate->format('m');
+                // Tahun pelajaran baru mulai bulan Juli
+                $startYear = $month >= 7 ? $year : $year - 1;
+                $tahunPelajaran = $startYear . '/' . ($startYear + 1);
+            } catch (\Throwable $e) {
+                $tahunPelajaran = '-';
+            }
+        }
+
+        return [
+            'semester'       => $semesterLabel,
+            'semester_id'    => $semesterId,
+            'tahun_pelajaran' => $tahunPelajaran ?? '-',
+        ];
     }
 
     /**

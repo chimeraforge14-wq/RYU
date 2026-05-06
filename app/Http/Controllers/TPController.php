@@ -38,14 +38,34 @@ class TPController extends Controller
     {
         $request->validate([
             'rombongan_belajar_id' => 'required',
-            'mata_pelajaran_id' => 'required',
-            'type' => 'required|in:tp,cp',
-            'content' => 'required'
+            'mata_pelajaran_id'    => 'required',
+            'type'                 => 'required|in:tp,cp',
+            'content'              => 'required'
         ]);
 
-        TpCpData::create(array_merge($request->all(), ['ptk_id' => session('ptk_id')]));
+        // ptk_id bisa null untuk superadmin — gunakan fallback
+        $ptkId = session('ptk_id') ?? session('user_id') ?? 'system';
+
+        TpCpData::create([
+            'rombongan_belajar_id' => $request->rombongan_belajar_id,
+            'mata_pelajaran_id'    => $request->mata_pelajaran_id,
+            'type'                 => $request->type,
+            'kode'                 => $request->kode,
+            'content'              => $request->content,
+            'ptk_id'               => $ptkId,
+        ]);
 
         return back()->with('success', 'Data TP/CP berhasil ditambahkan.');
+    }
+
+    public function destroy($id)
+    {
+        $tp = TpCpData::findOrFail($id);
+        // Hapus semua skor terkait dulu (meski ada cascade, eksplisit lebih aman)
+        TpScore::where('tp_id', $id)->delete();
+        $tp->delete();
+
+        return back()->with('success', 'TP berhasil dihapus.');
     }
 
     public function scoring(Request $request)

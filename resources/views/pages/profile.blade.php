@@ -9,6 +9,16 @@
             ✓ {{ session('success') }}
         </div>
     @endif
+    @if(session('info'))
+        <div style="background: rgba(99,102,241,0.1); color: #818cf8; padding: 0.85rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; border: 1px solid rgba(99,102,241,0.15); font-size: 0.85rem;">
+            ℹ {{ session('info') }}
+        </div>
+    @endif
+    @if($signature)
+        <div style="background: rgba(255,255,255,0.03); color: var(--text-muted); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); margin-bottom: 1rem; font-size: 0.7rem; font-family: monospace; border: 1px solid var(--border-color);">
+            📁 {{ $signature }}
+        </div>
+    @endif
     <div style="background: var(--card-bg); border: var(--glass-border); border-radius: var(--radius-lg); padding: 2rem;">
         <div style="display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap;">
             <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; flex-shrink: 0; box-shadow: 0 8px 24px rgba(99,102,241,0.3); color: white;">
@@ -34,16 +44,16 @@
                         </div>
                         <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap;">
                             <div style="width: 100px; height: 70px; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px dashed rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
-                                @if(isset($signature))
-                                    <img src="{{ Storage::url($signature) }}" style="width: 100%; height: 100%; object-fit: contain;">
+                                @if(isset($signature) && $signature)
+                                    <img src="{{ $signature }}" style="width: 100%; height: 100%; object-fit: contain;">
                                 @else
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="opacity: 0.2;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                                 @endif
                             </div>
                             <div style="flex: 1; min-width: 220px;">
                                 <label style="display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px;">Tanda Tangan (Khusus Wali Kelas)</label>
-                                <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Akan ditampilkan di Rapor. Gambar (PNG/JPG/SVG/WEBP) transparan disarankan.</p>
-                                <input type="file" name="signature" accept="image/*" style="font-size: 0.8rem; color: var(--text-secondary);">
+                                <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.75rem;">Format PNG, latar transparan disarankan.</p>
+                                <input type="file" name="signature" accept="image/png" style="font-size: 0.8rem; color: var(--text-secondary);">
                             </div>
                         </div>
                         <button type="submit" style="background: var(--accent-gradient); color: white; border: none; padding: 0.65rem 2rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 12px rgba(99,102,241,0.3);">
