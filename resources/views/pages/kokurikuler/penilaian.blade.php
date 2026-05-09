@@ -32,7 +32,7 @@
 </div>
 @elseif($groups->count() === 0)
 <div class="animate-slide-up delay-1" style="background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-lg); padding:3rem; text-align:center; color:var(--text-secondary);">
-    Belum ada grup kokurikuler. <a href="{{ route('kokurikuler.index') }}" style="color:#818cf8;">Buat dulu di sini</a>.
+    Belum ada grup kokurikuler. <a href="{{ route('kokurikuler.index') }}" style="color:var(--accent);">Buat dulu di sini</a>.
 </div>
 @elseif(empty($students))
 <div class="animate-slide-up delay-1" style="background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-lg); padding:3rem; text-align:center; color:var(--text-secondary);">
@@ -45,9 +45,9 @@
 
     @foreach($groups as $group)
     <div class="animate-slide-up delay-1" style="background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-lg); margin-bottom:1.5rem; overflow:hidden;">
-        <div style="padding:1rem 1.5rem; border-bottom:var(--glass-border); background:rgba(99,102,241,0.07);">
+        <div style="padding:1rem 1.5rem; border-bottom:var(--glass-border); background:var(--accent-light);">
             <div style="font-weight:700; font-size:1rem;">{{ $group->name }}</div>
-            @if($group->fase)<span style="font-size:0.7rem; background:rgba(99,102,241,0.12); color:#818cf8; padding:0.2rem 0.6rem; border-radius:6px;">Fase {{ $group->fase }}</span>@endif
+            @if($group->fase)<span style="font-size:0.7rem; background:rgba(225,29,72,0.1); color:var(--accent); padding:0.2rem 0.6rem; border-radius:6px;">Fase {{ $group->fase }}</span>@endif
         </div>
 
         @foreach($group->activities as $act)
@@ -58,7 +58,7 @@
             </div>
 
             <div style="overflow-x:auto;">
-                <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+                <table style="width:100%; border-collapse:collapse;">
                     <thead>
                         <tr style="background:rgba(255,255,255,0.03);">
                             <th style="padding:0.5rem 0.75rem; text-align:left; color:var(--text-secondary); font-weight:600; border-bottom:1px solid var(--border-color);">Nama Siswa</th>
@@ -74,9 +74,9 @@
                         @endphp
                         <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
                             <td style="padding:0.5rem 0.75rem; color:var(--text-primary);">{{ $siswa['nama'] ?? '-' }}</td>
-                            <td style="padding:0.5rem 0.75rem; text-align:center;">
+                            <td style="padding:0.75rem 1rem; text-align:center;">
                                 <select name="nilai[{{ $pdId }}][{{ $act->id }}]"
-                                        style="background:var(--bg-tertiary); border:1px solid var(--border-color); color:var(--text-primary); padding:0.35rem 0.75rem; border-radius:var(--radius-sm); font-size:0.8rem; outline:none; font-weight:600;">
+                                        style="background:var(--bg-tertiary); border:1px solid var(--border-color); color:var(--text-primary); padding:0.5rem 1rem; border-radius:var(--radius-sm); font-size:0.9rem; outline:none; font-weight:700;">
                                     <option value="">-</option>
                                     @foreach(['BB','MB','BSH','SB'] as $nilaiOpt)
                                     <option value="{{ $nilaiOpt }}" {{ $currentNilai === $nilaiOpt ? 'selected' : '' }}
@@ -97,7 +97,7 @@
     @endforeach
 
     <div style="position:sticky; bottom:1rem; z-index:100; text-align:right; padding:1rem 0;">
-        <button type="submit" style="background:var(--accent-gradient); color:white; border:none; padding:0.85rem 2.5rem; border-radius:var(--radius-md); font-weight:700; font-size:0.95rem; cursor:pointer; box-shadow:0 4px 20px rgba(99,102,241,0.4);">
+        <button type="submit" style="background:var(--accent-gradient); color:white; border:none; padding:0.85rem 2.5rem; border-radius:var(--radius-md); font-weight:700; font-size:0.95rem; cursor:pointer; box-shadow:0 4px 20px rgba(225,29,72,0.3);">
             💾 Simpan Semua Penilaian
         </button>
     </div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a0f1a">
+    <meta name="theme-color" content="#ffffff">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <title>@yield('title', 'Dashboard e-Rapor SD')</title>
     @livewireStyles
@@ -186,7 +186,7 @@
         </header>
 
         @if(session('info'))
-            <div style="background: rgba(59, 130, 246, 0.1); color: #60a5fa; padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(59,130,246,0.2); display:flex; align-items:center; gap:0.75rem;">
+            <div style="background: var(--accent-light); color: var(--accent); padding: 1rem 1.5rem; border-radius: 12px; margin-bottom: 2rem; border: 1px solid rgba(225,29,72,0.1); display:flex; align-items:center; gap:0.75rem;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                 {{ session('info') }}
             </div>

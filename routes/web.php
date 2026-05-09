@@ -123,6 +123,8 @@ Route::middleware(['auth.custom'])->group(function () {
         Route::post('/peserta-didik/tambah', [App\Http\Controllers\StudentController::class, 'store'])->name('students.store');
         Route::get('/peserta-didik/{id}/edit', [App\Http\Controllers\StudentController::class, 'edit'])->name('students.edit');
         Route::post('/peserta-didik/{id}/update', [App\Http\Controllers\StudentController::class, 'update'])->name('students.update');
+        Route::get('/peserta-didik/{id}/edit-data', [App\Http\Controllers\StudentController::class, 'editData'])->name('students.edit_data');
+        Route::post('/peserta-didik/{id}/edit-data', [App\Http\Controllers\StudentController::class, 'updateData'])->name('students.update_data');
         Route::get('/peserta-didik/{id}/rombel', [App\Http\Controllers\StudentController::class, 'manageRombel'])->name('students.rombel');
         Route::post('/peserta-didik/{id}/rombel', [App\Http\Controllers\StudentController::class, 'updateRombel'])->name('students.rombel.update');
 

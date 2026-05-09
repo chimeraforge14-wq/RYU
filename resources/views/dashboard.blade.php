@@ -13,7 +13,7 @@
 
 @section('content')
     {{-- Welcome Banner --}}
-    <div class="animate-slide-up" style="background: var(--accent-gradient); color: white; padding: 1.5rem 2rem; border-radius: var(--radius-xl); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(99,102,241,0.25), inset 0 1px 0 rgba(255,255,255,0.1); flex-wrap: wrap; gap: 1rem;">
+    <div class="animate-slide-up" style="background: var(--accent-gradient); color: white; padding: 1.5rem 2rem; border-radius: var(--radius-xl); margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(225,29,72,0.2), inset 0 1px 0 rgba(255,255,255,0.1); flex-wrap: wrap; gap: 1rem;">
         <div>
             <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; letter-spacing: -0.3px;">Selamat Datang di e-Rapor SD</h2>
             <p style="opacity: 0.85; font-size: 0.9rem;">Anda login sebagai <strong>{{ session('role') === 'superadmin' ? 'Super Administrator' : (session('role') === 'admin' ? 'Administrator' : 'Guru') }}</strong>. Silakan gunakan menu di sebelah kiri untuk mengelola data.</p>
@@ -60,7 +60,7 @@
             <div><div class="stat-label">Proyek P5</div><div class="stat-value">{{ $totalProyek }}</div></div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(99,102,241,0.1); color: #6366f1;">
+            <div class="stat-icon" style="background: var(--accent-light); color: var(--accent);">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             </div>
             <div><div class="stat-label">Penilaian P5 Terisi</div><div class="stat-value">{{ $totalPenilaianP5 }}</div></div>
@@ -70,8 +70,8 @@
     {{-- Quick Actions --}}
     <div class="section-header animate-slide-up delay-2"><div>⚡ Aksi Cepat</div></div>
     <div class="animate-slide-up delay-2" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.85rem; margin-bottom: 2rem;">
-        <a href="{{ route('nilai') }}" style="text-decoration:none; background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; border-left:3px solid #6366f1;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(99,102,241,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <a href="{{ route('nilai') }}" style="text-decoration:none; background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; border-left:3px solid var(--accent);" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(225,29,72,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             <div><div style="font-weight:600;font-size:0.82rem;color:var(--text-primary)">Input Nilai</div><div style="font-size:0.7rem;color:var(--text-secondary)">Nilai sumatif siswa</div></div>
         </a>
         <a href="{{ route('cetak', 'nilai') }}" style="text-decoration:none; background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; border-left:3px solid #10b981;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(16,185,129,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
@@ -86,8 +86,8 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
             <div><div style="font-weight:600;font-size:0.82rem;color:var(--text-primary)">Penilaian P5</div><div style="font-size:0.7rem;color:var(--text-secondary)">Profil pelajar Pancasila</div></div>
         </a>
-        <a href="{{ route('status_penilaian', 'input') }}" style="text-decoration:none; background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; border-left:3px solid #8b5cf6;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(139,92,246,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <a href="{{ route('status_penilaian', 'input') }}" style="text-decoration:none; background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; border-left:3px solid #0891b2;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(8,145,178,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             <div><div style="font-weight:600;font-size:0.82rem;color:var(--text-primary)">Status Penilaian</div><div style="font-size:0.7rem;color:var(--text-secondary)">Progress per kelas/mapel</div></div>
         </a>
         <a href="{{ route('cetak', 'leger') }}" style="text-decoration:none; background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; border-left:3px solid #ec4899;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(236,72,153,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
@@ -128,7 +128,7 @@
                     @endif
                 </div>
             </div>
-            <div style="background:rgba(255,255,255,0.07); border-radius:99px; height:8px; overflow:hidden;">
+            <div style="background:rgba(0,0,0,0.05); border-radius:99px; height:8px; overflow:hidden;">
                 <div style="height:100%; width:{{ $rp['persen'] }}%; border-radius:99px; background:{{ $rp['persen'] >= 80 ? 'linear-gradient(90deg,#10b981,#34d399)' : ($rp['persen'] >= 40 ? 'linear-gradient(90deg,#f59e0b,#fbbf24)' : 'linear-gradient(90deg,#ef4444,#f87171)') }}; transition:width 1s ease;"></div>
             </div>
             <div style="display:flex; justify-content:space-between; margin-top:0.65rem; font-size:0.7rem; color:var(--text-muted);">
@@ -136,7 +136,7 @@
                 <span>target {{ $rp['target'] }} nilai</span>
             </div>
             @if($rp['persen'] < 100)
-            <a href="{{ route('nilai') }}?rombongan_belajar_id={{ $rp['rombel_id'] }}" style="display:inline-block; margin-top:0.75rem; font-size:0.75rem; color:#818cf8; text-decoration:none; background:rgba(99,102,241,0.1); padding:0.3rem 0.75rem; border-radius:6px; border:1px solid rgba(99,102,241,0.2);">
+            <a href="{{ route('nilai') }}?rombongan_belajar_id={{ $rp['rombel_id'] }}" style="display:inline-block; margin-top:0.75rem; font-size:0.75rem; color:var(--accent); text-decoration:none; background:var(--accent-light); padding:0.3rem 0.75rem; border-radius:6px; border:1px solid rgba(225,29,72,0.1);">
                 → Input Nilai Kelas Ini
             </a>
             @else
@@ -183,10 +183,10 @@
 
         const baseOpts = {
             responsive: true, maintainAspectRatio: true,
-            plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1e293b', titleColor: '#f1f5f9', bodyColor: '#94a3b8', borderColor: '#334155', borderWidth: 1 } },
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: '#ffffff', titleColor: '#0f172a', bodyColor: '#475569', borderColor: 'rgba(0,0,0,0.1)', borderWidth: 1 } },
             scales: {
-                x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
-                y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+                x: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.04)' } },
+                y: { ticks: { color: '#64748b', font: { size: 11 } }, grid: { color: 'rgba(0,0,0,0.04)' } }
             }
         };
 
@@ -202,7 +202,7 @@
         if (ctx2 && labels.length > 0) {
             new Chart(ctx2, {
                 type: 'bar',
-                data: { labels, datasets: [{ data: avgNilai, backgroundColor: avgNilai.map(v => v >= 75 ? 'rgba(99,102,241,0.7)' : v >= 60 ? 'rgba(6,182,212,0.7)' : 'rgba(139,92,246,0.5)'), borderRadius: 6, borderSkipped: false }] },
+                data: { labels, datasets: [{ data: avgNilai, backgroundColor: avgNilai.map(v => v >= 75 ? 'rgba(225,29,72,0.7)' : v >= 60 ? 'rgba(225,29,72,0.5)' : 'rgba(225,29,72,0.3)'), borderRadius: 6, borderSkipped: false }] },
                 options: { ...baseOpts, scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, min: 0, max: 100 } } }
             });
         }

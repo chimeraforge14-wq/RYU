@@ -102,4 +102,37 @@ class StudentController extends Controller
 
         return back()->with('success', 'Rombongan belajar berhasil diperbarui.');
     }
+
+    public function editData($id)
+    {
+        $students = $this->dapodikService->getPesertaDidik();
+        $student = collect($students)->firstWhere('peserta_didik_id', $id);
+
+        if (!$student) return abort(404);
+
+        // Ambil semua override yang sudah tersimpan untuk siswa ini
+        $overrides = StudentOverride::where('peserta_didik_id', $id)
+            ->pluck('field_value', 'field_name')
+            ->toArray();
+
+        // Merge override ke data siswa (override lebih prioritas)
+        $student = array_merge($student, $overrides);
+
+        return view('pages.students.edit_data', compact('student'));
+    }
+
+    public function updateData(Request $request, $id)
+    {
+        $data = $request->except(['_token', '_method']);
+
+        foreach ($data as $key => $value) {
+            StudentOverride::updateOrCreate(
+                ['peserta_didik_id' => $id, 'field_name' => $key],
+                ['field_value' => $value]
+            );
+        }
+
+        return redirect()->route('students.edit_data', $id)
+            ->with('success', 'Data peserta didik berhasil diperbarui.');
+    }
 }

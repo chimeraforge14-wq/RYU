@@ -8,8 +8,9 @@
         {!! file_get_contents(resource_path('css/app.css')) !!}
         
         body {
-            background: radial-gradient(circle at top right, #1e293b, #0f172a);
             overflow: hidden;
+            background: var(--bg-primary);
+            color: var(--text-primary);
         }
 
         .login-container {
@@ -18,18 +19,19 @@
             justify-content: center;
             min-height: 100vh;
             width: 100%;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 86c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm66-3c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm-46-45c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zm40 24c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-11 30c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-45-28c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm-24-32c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM46 94c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm41-35c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM21 2c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM6 46c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM25 64c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zm63 5c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM53 48c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1zM77 8c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z' fill='%233b82f6' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            position: relative;
+            z-index: 1;
         }
 
         .login-card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--card-bg);
+            border: var(--glass-border);
             border-radius: 24px;
             padding: 3rem;
             width: 100%;
             max-width: 420px;
             backdrop-filter: blur(20px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -70,11 +72,11 @@
 
         .form-control {
             width: 100%;
-            padding: 0.875rem 1rem 0.875rem 40px;
+            padding: 0.875rem 1rem 0.875rem 1rem;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(15, 23, 42, 0.5);
-            color: white;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
             font-size: 1rem;
             transition: all 0.3s;
         }
@@ -82,7 +84,7 @@
         .form-control:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
         }
 
         .btn-login {
@@ -138,12 +140,12 @@
                 @if(isset($settings['school_logo']))
                     <img src="{{ Storage::url($settings['school_logo']) }}" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 1.5rem;">
                 @else
-                    <div style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; border: 1px solid rgba(59,130,246,0.2);">
+                    <div style="width: 80px; height: 80px; background: rgba(225, 29, 72, 0.1); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; border: 1px solid rgba(225, 29, 72, 0.2);">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent)"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
                     </div>
                 @endif
                 
-                <h2 style="margin-bottom: 0.25rem; font-size: 1.5rem; letter-spacing: -0.02em;">
+                <h2 style="margin-bottom: 0.25rem; font-size: 1.5rem; letter-spacing: -0.02em; color: var(--text-primary);">
                     {{ $settings['school_name'] ?? 'e-Rapor SD Modern' }}
                 </h2>
                 <p style="color: var(--text-secondary); font-size: 0.875rem;">Sistem Penilaian Kurikulum Merdeka</p>

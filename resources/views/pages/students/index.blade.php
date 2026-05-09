@@ -43,7 +43,8 @@
                         @endif
                     </td>
                     <td style="text-align: center;">
-                        <a href="{{ route('students.edit', $siswa['peserta_didik_id']) }}" style="color: #818cf8; text-decoration: none; font-size: 0.8rem; margin-right: 0.75rem; font-weight: 500;">Edit</a>
+                        <a href="{{ route('students.edit', $siswa['peserta_didik_id']) }}" style="color: #818cf8; text-decoration: none; font-size: 0.8rem; margin-right: 0.75rem; font-weight: 500;">Edit Identitas</a>
+                        <a href="{{ route('students.edit_data', $siswa['peserta_didik_id']) }}" style="color: #fb923c; text-decoration: none; font-size: 0.8rem; margin-right: 0.75rem; font-weight: 500;">Edit Data</a>
                         <a href="{{ route('students.rombel', $siswa['peserta_didik_id']) }}" style="color: #34d399; text-decoration: none; font-size: 0.8rem; font-weight: 500;">Rombel</a>
                     </td>
                 </tr>
