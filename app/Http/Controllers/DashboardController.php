@@ -124,6 +124,23 @@ class DashboardController extends Controller
             ->havingRaw('COUNT(DISTINCT mata_pelajaran_id) >= 1')
             ->count();
 
+        if ($role === 'superadmin' && !session('school_id')) {
+            $schools = \App\Models\School::withCount(['users'])->get();
+            
+            // Enrich schools with basic stats from JSON
+            foreach ($schools as $school) {
+                $school->stats = $this->dapodikService->getStatsByNpsn($school->npsn);
+            }
+            
+            // Global statistics across all schools
+            $totalSchools = $schools->count();
+            
+            return view('pages.superadmin.dashboard', [
+                'schools' => $schools,
+                'totalSchools' => $totalSchools,
+            ]);
+        }
+
         return view('dashboard', [
             'sekolah'          => $sekolah,
             'pengguna'         => $pengguna,

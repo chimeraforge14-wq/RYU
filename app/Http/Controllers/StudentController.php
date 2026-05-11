@@ -22,28 +22,6 @@ class StudentController extends Controller
         return view('pages.students.index', compact('students'));
     }
 
-    public function create()
-    {
-        return view('pages.students.create');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required',
-            'nisn' => 'nullable',
-            'nik' => 'nullable',
-        ]);
-
-        $id = \Illuminate\Support\Str::uuid();
-        
-        \App\Models\StudentOverride::create(array_merge($request->all(), [
-            'peserta_didik_id' => $id
-        ]));
-
-        return redirect()->route('students.index')->with('success', 'Siswa baru berhasil ditambahkan secara manual.');
-    }
-
     public function edit($id)
     {
         $students = $this->dapodikService->getPesertaDidik();

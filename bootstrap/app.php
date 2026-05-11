@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.custom' => \App\Http\Middleware\CheckLogin::class,
             'role' => \App\Http\Middleware\RoleCheck::class,
+            'tenant' => \App\Http\Middleware\TenantMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

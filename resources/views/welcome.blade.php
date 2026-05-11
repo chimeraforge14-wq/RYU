@@ -167,7 +167,14 @@
                     </main>
 
                     <footer class="py-16 text-center text-sm text-black dark:text-white/70">
-                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                        <div style="margin-bottom: 0.5rem; opacity: 0.8;">
+                            &copy; {{ date('Y') }} e-Rapor SD Modern. All rights reserved.
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 800; color: #e11d48; letter-spacing: 0.1em; text-transform: uppercase;">
+                            <span style="width: 20px; height: 1px; background: #e11d48; opacity: 0.3;"></span>
+                            POWERED BY 19.15 TEAM
+                            <span style="width: 20px; height: 1px; background: #e11d48; opacity: 0.3;"></span>
+                        </div>
                     </footer>
                 </div>
             </div>

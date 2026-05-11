@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BelongsToTenant;
 
 class ManualSubject extends Model
 {
-    protected $fillable = ['parent_id', 'mata_pelajaran_id', 'nama_mata_pelajaran', 'kelompok', 'urutan', 'is_active'];
+    use BelongsToTenant;
+
+    protected $fillable = ['parent_id', 'mata_pelajaran_id', 'nama_mata_pelajaran', 'kelompok', 'urutan', 'is_active', 'school_id'];
 
     public function children()
     {

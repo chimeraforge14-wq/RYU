@@ -57,13 +57,13 @@
             <div class="stat-icon" style="background: rgba(6,182,212,0.1); color: #06b6d4;">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
             </div>
-            <div><div class="stat-label">Proyek P5</div><div class="stat-value">{{ $totalProyek }}</div></div>
+            <div><div class="stat-label">Proyek Kokurikuler</div><div class="stat-value">{{ $totalProyek }}</div></div>
         </div>
         <div class="stat-card">
             <div class="stat-icon" style="background: var(--accent-light); color: var(--accent);">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             </div>
-            <div><div class="stat-label">Penilaian P5 Terisi</div><div class="stat-value">{{ $totalPenilaianP5 }}</div></div>
+            <div><div class="stat-label">Penilaian Kokurikuler Terisi</div><div class="stat-value">{{ $totalPenilaianP5 }}</div></div>
         </div>
     </div>
 
@@ -84,7 +84,7 @@
         </a>
         <a href="{{ route('kokurikuler.penilaian') }}" style="text-decoration:none; background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; border-left:3px solid #06b6d4;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(6,182,212,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-            <div><div style="font-weight:600;font-size:0.82rem;color:var(--text-primary)">Penilaian P5</div><div style="font-size:0.7rem;color:var(--text-secondary)">Profil pelajar Pancasila</div></div>
+            <div><div style="font-weight:600;font-size:0.82rem;color:var(--text-primary)">Nilai Kokurikuler</div><div style="font-size:0.7rem;color:var(--text-secondary)">Pencapaian kokurikuler</div></div>
         </a>
         <a href="{{ route('status_penilaian', 'input') }}" style="text-decoration:none; background:var(--card-bg); border:var(--glass-border); border-radius:var(--radius-md); padding:1.1rem 1.25rem; display:flex; align-items:center; gap:0.85rem; transition:all 0.2s; border-left:3px solid #0891b2;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(8,145,178,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>

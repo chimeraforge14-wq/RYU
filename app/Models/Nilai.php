@@ -4,8 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\BelongsToTenant;
+
 class Nilai extends Model
 {
+    use BelongsToTenant;
     protected $table = 'nilai_sumatif';
     protected $fillable = [
         'rombongan_belajar_id',
@@ -15,6 +18,7 @@ class Nilai extends Model
         'nilai_tp2',
         'nilai_sas',
         'nilai_akhir',
-        'deskripsi_capaian'
+        'deskripsi_capaian',
+        'school_id'
     ];
 }

@@ -47,104 +47,101 @@
             @endif
 
             @if(session('role') === 'superadmin')
-            <li><a href="{{ route('students.index') }}" class="nav-link {{ request()->routeIs('students.*') ? 'active' : '' }}">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                Kelola Peserta Didik
-            </a></li>
-            @endif
-
-            @if(session('role') === 'admin' || session('role') === 'superadmin')
-            <li><a href="{{ route('sync') }}" class="nav-link {{ request()->routeIs('sync') ? 'active' : '' }}">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 14.3-11.4l-3.2 3.1"></path></svg>
-                Ambil Data Dapodik
-            </a></li>
-            <li><a href="{{ route('settings') }}" class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                Identitas Sekolah
-            </a></li>
-            <li><a href="{{ route('pengguna') }}" class="nav-link {{ request()->routeIs('pengguna') ? 'active' : '' }}">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                Data Pengguna
-            </a></li>
-            @endif
-            
-            <li class="nav-item">
-                <a href="#" class="nav-link submenu-toggle">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    Data Referensi
-                    <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <div class="nav-label">SUPERADMIN</div>
+                <a href="{{ route('super.schools') }}" class="nav-link {{ Request::is('super/sekolah*') ? 'active' : '' }}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Kelola Tenant (Sekolah)
                 </a>
-                <ul class="submenu">
-                    @if(session('role') === 'admin' || session('role') === 'superadmin')
-                    <li><a href="{{ route('referensi', 'sekolah') }}">Data Sekolah</a></li>
-                    <li><a href="{{ route('guru') }}">Data Guru</a></li>
-                    @endif
-                    <li><a href="{{ route('siswa') }}">Data Siswa</a></li>
-                    <li><a href="{{ route('referensi', 'kelas') }}">Data Kelas</a></li>
-                    <li><a href="{{ route('referensi', 'mapel') }}">Data Mata Pelajaran</a></li>
-                    @if(session('role') === 'admin' || session('role') === 'superadmin')
-                    <li><a href="{{ route('subjects.index') }}" style="color: var(--accent);">Mapel Manual/Lokal</a></li>
-                    @endif
-                    <li><a href="{{ route('referensi', 'pembelajaran') }}">Data Pembelajaran</a></li>
-                    <li><a href="{{ route('referensi', 'ekstrakurikuler') }}">Data Ekstrakurikuler</a></li>
-                </ul>
-            </li>
+                <a href="{{ route('students.index') }}" class="nav-link {{ Request::is('peserta-didik*') ? 'active' : '' }}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Identitas Peserta Didik
+                </a>
+            @endif
 
-            <li class="nav-item">
-                <a href="#" class="nav-link submenu-toggle">
+            @if(session('school_id') || session('role') !== 'superadmin')
+                @if(session('role') === 'admin' || session('role') === 'superadmin')
+                <li><a href="{{ route('sync') }}" class="nav-link {{ request()->routeIs('sync') ? 'active' : '' }}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 14.3-11.4l-3.2 3.1"></path></svg>
+                    Ambil Data Dapodik
+                </a></li>
+                <li><a href="{{ route('settings') }}" class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Identitas Sekolah
+                </a></li>
+                <li><a href="{{ route('pengguna') }}" class="nav-link {{ request()->routeIs('pengguna') ? 'active' : '' }}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Data Pengguna
+                </a></li>
+                @endif
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link submenu-toggle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        Data Referensi
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul class="submenu">
+                        @if(session('role') === 'admin' || session('role') === 'superadmin')
+                        <li><a href="{{ route('referensi', 'sekolah') }}">Data Sekolah</a></li>
+                        <li><a href="{{ route('guru') }}">Data Guru</a></li>
+                        @endif
+                        <li><a href="{{ route('siswa') }}">Data Siswa</a></li>
+                        <li><a href="{{ route('referensi', 'kelas') }}">Data Kelas</a></li>
+                        <li><a href="{{ route('referensi', 'mapel') }}">Data Mata Pelajaran</a></li>
+                        @if(session('role') === 'admin' || session('role') === 'superadmin')
+                        <li><a href="{{ route('subjects.index') }}" style="color: var(--accent);">Mapel Manual/Lokal</a></li>
+                        @endif
+                        <li><a href="{{ route('referensi', 'pembelajaran') }}">Data Pembelajaran</a></li>
+                        <li><a href="{{ route('referensi', 'ekstrakurikuler') }}">Data Ekstrakurikuler</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="{{ route('kokurikuler.penilaian') }}" class="nav-link {{ request()->routeIs('kokurikuler.*') ? 'active' : '' }}">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
-                    Data Kokurikuler
-                    <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </a>
-                <ul class="submenu">
-                    @if(session('role') === 'admin' || session('role') === 'superadmin')
-                    <li><a href="{{ route('kokurikuler.groups') }}" style="color: var(--accent);">Kelompok & Koordinator</a></li>
-                    <li><a href="{{ route('kokurikuler.perencanaan') }}">Perencanaan P5</a></li>
-                    @endif
-                    <li><a href="{{ route('kokurikuler.penilaian') }}">Penilaian P5</a></li>
-                </ul>
-            </li>
+                    Nilai Kokurikuler
+                </a></li>
 
-            <li class="nav-item">
-                <a href="#" class="nav-link submenu-toggle">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    Status Penilaian
-                    <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </a>
-                <ul class="submenu">
-                    <li><a href="{{ route('status_penilaian', 'input') }}">Status Input Nilai</a></li>
-                    <li><a href="{{ route('status_penilaian', 'kompetensi') }}">Pencapaian Kompetensi</a></li>
-                </ul>
-            </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link submenu-toggle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Status Penilaian
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="{{ route('status_penilaian', 'input') }}">Status Input Nilai</a></li>
+                        <li><a href="{{ route('status_penilaian', 'kompetensi') }}">Pencapaian Kompetensi</a></li>
+                    </ul>
+                </li>
 
-            <li class="nav-item">
-                <a href="#" class="nav-link submenu-toggle">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                    Perkembangan Nilai
-                    <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </a>
-                <ul class="submenu">
-                    <li><a href="{{ route('perkembangan', 'tabel') }}">Tabel Nilai</a></li>
-                    <li><a href="{{ route('perkembangan', 'grafik') }}">Grafik Rapor</a></li>
-                </ul>
-            </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link submenu-toggle">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        Perkembangan Nilai
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="{{ route('perkembangan', 'tabel') }}">Tabel Nilai</a></li>
+                        <li><a href="{{ route('perkembangan', 'grafik') }}">Grafik Rapor</a></li>
+                    </ul>
+                </li>
 
-            <li class="nav-item">
-                <a href="#" class="nav-link submenu-toggle {{ request()->routeIs('cetak*') || request()->routeIs('pelengkap_rapor') || request()->routeIs('nilai') ? 'active' : '' }}">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                    Input & Cetak
-                    <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </a>
-                <ul class="submenu">
-                    <li><a href="{{ route('tp.index') }}" style="color: var(--accent);">Input Tujuan Pembelajaran</a></li>
-                    <li><a href="{{ route('tp.scoring') }}" style="color: var(--accent);">Input Nilai TP/CP</a></li>
-                    <li><a href="{{ route('nilai') }}" class="{{ request()->routeIs('nilai') ? 'active' : '' }}">Input Nilai Rapor</a></li>
-                    <li><a href="{{ route('pelengkap_rapor') }}" class="{{ request()->routeIs('pelengkap_rapor') ? 'active' : '' }}">Input Absensi & Catatan</a></li>
-                    <li><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin: 0.5rem 0;"></li>
-                    <li><a href="{{ route('cetak', 'leger') }}">Cetak Leger Rapor</a></li>
-                    <li><a href="{{ route('cetak', 'nilai') }}">Cetak Rapor Siswa</a></li>
-                </ul>
-            </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link submenu-toggle {{ request()->routeIs('cetak*') || request()->routeIs('pelengkap_rapor') || request()->routeIs('nilai') ? 'active' : '' }}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"></rect></svg>
+                        Input & Cetak
+                        <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="{{ route('tp.index') }}" style="color: var(--accent);">Input Tujuan Pembelajaran</a></li>
+                        <li><a href="{{ route('tp.scoring') }}" style="color: var(--accent);">Input Nilai TP/CP</a></li>
+                        <li><a href="{{ route('nilai') }}" class="{{ request()->routeIs('nilai') ? 'active' : '' }}">Input Nilai Rapor</a></li>
+                        <li><a href="{{ route('pelengkap_rapor') }}" class="{{ request()->routeIs('pelengkap_rapor') ? 'active' : '' }}">Input Absensi & Catatan</a></li>
+                        <li><hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin: 0.5rem 0;"></li>
+                        <li><a href="{{ route('cetak', 'leger') }}">Cetak Leger Rapor</a></li>
+                        <li><a href="{{ route('cetak', 'nilai') }}">Cetak Rapor Siswa</a></li>
+                    </ul>
+                </li>
+            @endif
 
             <li style="margin-top: 1rem;"><div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 0.5rem; padding-left: 1rem; font-weight: 600; letter-spacing: 0.05em;">Utility</div></li>
             
@@ -170,11 +167,33 @@
     <!-- Main Content Area -->
     <main class="main-content">
         <header class="header animate-slide-up">
-            <div>
-                <h1>@yield('header_title', 'Overview')</h1>
-                <p style="color: var(--text-secondary); margin-top: 0.5rem;">
-                    @yield('header_subtitle', '')
-                </p>
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+                <div>
+                    <h1>@yield('header_title', 'Overview')</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.85rem;">
+                        @yield('header_subtitle', '')
+                    </p>
+                </div>
+
+                @if(session('role') === 'superadmin' && session('school_id'))
+                    <div style="background: rgba(225,29,72,0.05); border: 1px solid rgba(225,29,72,0.1); padding: 0.5rem 1rem; border-radius: 99px; display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="font-size: 0.75rem; font-weight: 600; color: var(--accent);">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 0.25rem;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                            @php $currentSchool = \App\Models\School::find(session('school_id')); @endphp
+                            Mode: {{ $currentSchool->name ?? 'Tenant' }}
+                        </span>
+                        <a href="{{ route('super.schools.exit') }}" style="font-size: 0.7rem; background: var(--accent); color: white; padding: 0.25rem 0.75rem; border-radius: 99px; text-decoration: none; font-weight: 700; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            KELUAR TENANT
+                        </a>
+                    </div>
+                @elseif(session('role') === 'superadmin')
+                    <div style="background: rgba(15,23,42,0.05); border: 1px solid rgba(15,23,42,0.1); padding: 0.5rem 1rem; border-radius: 99px; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align: middle; margin-right: 0.25rem;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            MODE GLOBAL
+                        </span>
+                    </div>
+                @endif
             </div>
             <div class="user-profile">
                 <div class="avatar">{{ substr(session('nama', 'A'), 0, 1) }}</div>
@@ -193,6 +212,17 @@
         @endif
 
         @yield('content')
+
+        <footer style="margin-top: 5rem; padding: 2.5rem 0; border-top: 1px solid rgba(0,0,0,0.05); text-align: center;">
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; opacity: 0.8;">
+                &copy; {{ date('Y') }} e-Rapor SD Modern. All rights reserved.
+            </p>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 800; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;">
+                <span style="width: 20px; height: 1px; background: var(--accent); opacity: 0.3;"></span>
+                POWERED BY 19.15 TEAM
+                <span style="width: 20px; height: 1px; background: var(--accent); opacity: 0.3;"></span>
+            </div>
+        </footer>
 
     </main>
 

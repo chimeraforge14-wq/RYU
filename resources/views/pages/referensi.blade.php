@@ -178,6 +178,19 @@
                         <th>Kurikulum</th>
                         <th>Wali Kelas</th>
                         <th style="text-align: center;">Aksi</th>
+                    @elseif(strtolower($type) == 'mapel')
+                        <th>ID Mapel</th>
+                        <th>Nama Mata Pelajaran</th>
+                    @elseif(strtolower($type) == 'pembelajaran')
+                        <th>Rombel</th>
+                        <th>Mata Pelajaran</th>
+                        <th>Guru Pengajar</th>
+                        <th style="text-align: center;">Jam/Mgg</th>
+                    @elseif(strtolower($type) == 'ekstrakurikuler')
+                        <th>Nama Ekstrakurikuler</th>
+                        <th>Pembina</th>
+                        <th>Tingkat</th>
+                        <th style="text-align: center;">Aksi</th>
                     @else
                         <th>Informasi</th>
                         <th>Detail</th>
@@ -203,47 +216,119 @@
                                 </table>
                             </td>
                         @elseif(strtolower($type) == 'guru')
-                            <td style="font-weight: 600;">
-                                {{ $rowArr['nama'] ?? $rowArr['nama_guru'] ?? '-' }}
-                                @if(isset($rowArr['is_manual']))
-                                    <span style="font-size: 0.65rem; background: rgba(59, 130, 246, 0.1); color: #60a5fa; padding: 2px 6px; border-radius: 4px; margin-left: 5px; font-weight: normal;">MANUAL</span>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem; flex-shrink: 0;">
+                                        {{ substr($rowArr['nama'] ?? $rowArr['nama_guru'] ?? 'G', 0, 1) }}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--text-primary);">
+                                            {{ $rowArr['nama'] ?? $rowArr['nama_guru'] ?? '-' }}
+                                            @if(isset($rowArr['is_manual']))
+                                                <span style="font-size: 0.6rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: 600; letter-spacing: 0.5px;">MANUAL</span>
+                                            @endif
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">{{ $rowArr['email'] ?? 'Tidak ada email' }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="font-family: monospace; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; display: inline-block;">
+                                    NUPTK: {{ $rowArr['nuptk'] ?? '-' }}
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
+                                    NIP: {{ $rowArr['nip'] ?? '-' }}
+                                </div>
+                            </td>
+                            <td>
+                                @if(($rowArr['jenis_kelamin'] ?? '') == 'L')
+                                    <span style="background: rgba(59, 130, 246, 0.1); color: #60a5fa; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">Laki-laki</span>
+                                @elseif(($rowArr['jenis_kelamin'] ?? '') == 'P')
+                                    <span style="background: rgba(236, 72, 153, 0.1); color: #f472b6; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">Perempuan</span>
+                                @else
+                                    -
                                 @endif
                             </td>
-                            <td>{{ $rowArr['nuptk'] ?? '-' }} / {{ $rowArr['nip'] ?? '-' }}</td>
-                            <td>{{ $rowArr['jenis_kelamin'] ?? '-' }}</td>
-                            <td>{{ $rowArr['jenis_ptk_id_str'] ?? $rowArr['tugas_tambahan'] ?? 'Guru Mapel/Kelas' }}</td>
+                            <td>
+                                <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 500;">
+                                    {{ $rowArr['jenis_ptk_id_str'] ?? $rowArr['tugas_tambahan'] ?? 'Guru Mapel/Kelas' }}
+                                </span>
+                            </td>
                         @elseif(strtolower($type) == 'siswa')
-                            <td style="font-weight: 600;">{{ $rowArr['nama'] ?? '-' }}</td>
-                            <td>{{ $rowArr['nisn'] ?? '-' }} / {{ $rowArr['nipd'] ?? '-' }}</td>
-                            <td>{{ $rowArr['jenis_kelamin'] ?? '-' }}</td>
+                            <td>
+                                <div style="font-weight: 600; color: var(--text-primary);">{{ $rowArr['nama'] ?? '-' }}</div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">{{ $rowArr['agama_id_str'] ?? '' }}</div>
+                            </td>
+                            <td>
+                                <div style="font-family: monospace; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; display: inline-block;">
+                                    NISN: {{ $rowArr['nisn'] ?? '-' }}
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px;">
+                                    NIPD: {{ $rowArr['nipd'] ?? '-' }}
+                                </div>
+                            </td>
+                            <td>
+                                @if(($rowArr['jenis_kelamin'] ?? '') == 'L')
+                                    <span style="background: rgba(59, 130, 246, 0.1); color: #60a5fa; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">Laki-laki</span>
+                                @elseif(($rowArr['jenis_kelamin'] ?? '') == 'P')
+                                    <span style="background: rgba(236, 72, 153, 0.1); color: #f472b6; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">Perempuan</span>
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td>{{ $rowArr['tempat_lahir'] ?? '-' }}, {{ $rowArr['tanggal_lahir'] ?? '-' }}</td>
                         @elseif(strtolower($type) == 'kelas')
-                            <td style="font-weight: 600;">{{ $rowArr['nama'] ?? '-' }}</td>
-                            <td>Kelas {{ $rowArr['tingkat_pendidikan_id'] ?? '-' }}</td>
-                            <td style="font-size: 0.8rem;">{{ $rowArr['kurikulum_id_str'] ?? '-' }}</td>
-                            <td>{{ $rowArr['nama_wali_kelas'] ?? '-' }}</td>
+                            <td>
+                                <div style="font-weight: 600; font-size: 1.05rem; color: var(--accent);">{{ $rowArr['nama'] ?? '-' }}</div>
+                            </td>
+                            <td>
+                                <span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">
+                                    Kelas {{ $rowArr['tingkat_pendidikan_id'] ?? '-' }}
+                                </span>
+                            </td>
+                            <td style="font-size: 0.85rem; color: var(--text-secondary);">{{ $rowArr['kurikulum_id_str'] ?? '-' }}</td>
+                            <td style="font-weight: 500;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 24px; height: 24px; background: rgba(99, 102, 241, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    </div>
+                                    {{ $rowArr['nama_wali_kelas'] ?? '-' }}
+                                </div>
+                            </td>
                             <td style="text-align: center;">
-                                <a href="{{ url('/referensi/kelas/anggota/' . ($rowArr['rombongan_belajar_id'] ?? $rowArr['id'])) }}" class="btn-sync" style="padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; text-decoration:none;">Anggota Rombel</a>
+                                <a href="{{ url('/referensi/kelas/anggota/' . ($rowArr['rombongan_belajar_id'] ?? $rowArr['id'])) }}" class="btn-sync" style="padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; text-decoration:none; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">Lihat Anggota</a>
                             </td>
                         @elseif(strtolower($type) == 'mapel')
-                            <td>{{ $rowArr['mata_pelajaran_id'] ?? '-' }}</td>
-                            <td style="font-weight: 600;">{{ $rowArr['nama_mata_pelajaran'] ?? '-' }}</td>
+                            <td style="font-family: monospace; color: var(--text-secondary);">{{ $rowArr['mata_pelajaran_id'] ?? '-' }}</td>
+                            <td style="font-weight: 600; color: var(--text-primary);">{{ $rowArr['nama_mata_pelajaran'] ?? '-' }}</td>
                         @elseif(strtolower($type) == 'pembelajaran')
-                            <td style="font-weight: 600; color: var(--accent);">{{ $rowArr['nama_rombel'] ?? '-' }}</td>
                             <td>
+                                <span style="background: rgba(99, 102, 241, 0.1); color: #818cf8; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 0.8rem;">
+                                    {{ $rowArr['nama_rombel'] ?? '-' }}
+                                </span>
+                            </td>
+                            <td style="font-weight: 500;">
                                 {{ $rowArr['nama_mata_pelajaran'] ?? $rowArr['mata_pelajaran_id_str'] ?? '-' }}
                                 @if(isset($rowArr['is_manual']))
                                     <span style="font-size: 0.65rem; background: rgba(59, 130, 246, 0.1); color: #60a5fa; padding: 2px 6px; border-radius: 4px; margin-left: 5px; font-weight: normal;">MANUAL</span>
                                 @endif
                             </td>
-                            <td>{{ $rowArr['ptk_id_str'] ?? '-' }}</td>
-                            <td style="text-align: center;">{{ $rowArr['jam_mengajar_per_minggu'] ?? '0' }} Jam</td>
-                        @elseif(strtolower($type) == 'ekstrakurikuler')
-                            <td style="font-weight: 600;">{{ $rowArr['nama'] ?? '-' }}</td>
-                            <td>{{ $rowArr['ptk_id_str'] ?? '-' }}</td>
-                            <td>{{ $rowArr['tingkat_pendidikan_id_str'] ?? '-' }}</td>
+                            <td style="color: var(--text-secondary);">{{ $rowArr['ptk_id_str'] ?? '-' }}</td>
                             <td style="text-align: center;">
-                                <a href="{{ url('/referensi/kelas/anggota/' . ($rowArr['rombongan_belajar_id'] ?? $rowArr['id'])) }}" class="btn-sync" style="padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; text-decoration:none;">Daftar Anggota</a>
+                                <span style="background: rgba(255, 255, 255, 0.05); padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
+                                    {{ $rowArr['jam_mengajar_per_minggu'] ?? '0' }} Jam
+                                </span>
+                            </td>
+                        @elseif(strtolower($type) == 'ekstrakurikuler')
+                            <td style="font-weight: 600; color: var(--accent);">{{ $rowArr['nama'] ?? '-' }}</td>
+                            <td>{{ $rowArr['ptk_id_str'] ?? '-' }}</td>
+                            <td>
+                                <span style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">
+                                    {{ $rowArr['tingkat_pendidikan_id_str'] ?? '-' }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;">
+                                <a href="{{ url('/referensi/kelas/anggota/' . ($rowArr['rombongan_belajar_id'] ?? $rowArr['id'])) }}" class="btn-sync" style="padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.75rem; text-decoration:none; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">Lihat Anggota</a>
                             </td>
                         @else
                             <td colspan="2">

@@ -10,7 +10,7 @@
             <div>
                 <h2 style="font-weight: 600; margin-bottom: 0.5rem; font-size: 1.5rem;">Status Sinkronisasi</h2>
                 <p style="color: var(--text-secondary);">
-                    Terakhir disinkronkan: <strong style="color: white;">{{ $lastSync ?? 'Belum pernah disinkronisasi' }}</strong>
+                    Terakhir disinkronkan: <strong style="color: var(--text-primary);">{{ $lastSync ?? 'Belum pernah disinkronisasi' }}</strong>
                 </p>
                 @if(session('success'))
                     <div style="margin-top: 1rem; color: #10b981; font-weight: 500; display:flex; align-items:center; gap:0.5rem;">
@@ -25,26 +25,31 @@
                 @endif
             </div>
             
-            <form action="{{ route('sync.process') }}" method="POST" id="syncForm" style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; min-width: 320px; background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+            <form action="{{ route('sync.process') }}" method="POST" id="syncForm" style="display: flex; flex-direction: column; gap: 1rem; align-items: flex-start; min-width: 320px; background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);">
                 @csrf
                 <div style="width: 100%;">
                     <label for="dapodik_url" style="display: block; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: left;">URL Dapodik</label>
-                    <input type="url" id="dapodik_url" name="dapodik_url" value="{{ $lastConfig['url'] }}" placeholder="Contoh: http://localhost:5774" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; outline: none; font-family: monospace; font-size: 0.9rem;">
+                    <input type="url" id="dapodik_url" name="dapodik_url" value="{{ $lastConfig['url'] }}" placeholder="Contoh: http://localhost:5774" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: white; color: var(--text-primary); outline: none; font-family: monospace; font-size: 0.9rem;">
                 </div>
                 
                 <div style="width: 100%;">
                     <label for="token" style="display: block; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: left;">Token / Key</label>
-                    <input type="text" id="token" name="token" value="{{ $lastConfig['token'] }}" placeholder="Masukkan Token / Key Dapodik" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; outline: none; font-family: monospace; font-size: 0.9rem;">
+                    <input type="text" id="token" name="token" value="{{ $lastConfig['token'] }}" placeholder="Masukkan Token / Key Dapodik" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: white; color: var(--text-primary); outline: none; font-family: monospace; font-size: 0.9rem;">
                 </div>
 
                 <div style="width: 100%;">
                     <label for="npsn" style="display: block; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: left;">NPSN</label>
-                    <input type="text" id="npsn" name="npsn" value="{{ $lastConfig['npsn'] }}" placeholder="Masukkan NPSN" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; outline: none; font-family: monospace; font-size: 0.9rem;">
+                    <input type="text" id="npsn" name="npsn" value="{{ $lastConfig['npsn'] }}" placeholder="Masukkan NPSN" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: white; color: var(--text-primary); outline: none; font-family: monospace; font-size: 0.9rem;">
+                </div>
+
+                <div style="width: 100%;">
+                    <label for="registration_code" style="display: block; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: left;">Kode Registrasi</label>
+                    <input type="text" id="registration_code" name="registration_code" value="{{ $lastConfig['registration_code'] ?? '' }}" placeholder="Masukkan Kode Registrasi Dapodik" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: white; color: var(--text-primary); outline: none; font-family: monospace; font-size: 0.9rem;">
                 </div>
 
                 <div style="width: 100%;">
                     <label for="semester" style="display: block; font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: left;">Semester</label>
-                    <select id="semester" name="semester" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #1e293b; color: white; outline: none; font-size: 0.9rem; cursor: pointer;">
+                    <select id="semester" name="semester" required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: white; color: var(--text-primary); outline: none; font-size: 0.9rem; cursor: pointer;">
                         <option value="">Pilih Semester</option>
                         <option value="20251" {{ $lastConfig['semester'] == '20251' ? 'selected' : '' }}>2025/2026 Ganjil (20251)</option>
                         <option value="20252" {{ $lastConfig['semester'] == '20252' ? 'selected' : '' }}>2025/2026 Genap (20252)</option>
@@ -108,9 +113,9 @@
     <div class="stat-card animate-slide-up delay-1" style="padding: 2rem;">
         <h3 style="margin-bottom: 1rem; font-weight: 600;">Apa yang disinkronisasi?</h3>
         <ul style="color: var(--text-secondary); line-height: 1.8; margin-left: 1.5rem;">
-            <li><strong style="color: #f8fafc;">Profil Sekolah:</strong> Menarik data identitas sekolah, NPSN, dan alamat terbaru.</li>
-            <li><strong style="color: #f8fafc;">Data PTK & Operator:</strong> Menarik daftar pengguna aktif beserta akunnya.</li>
-            <li><strong style="color: #f8fafc;">Rombongan Belajar:</strong> Menarik seluruh data kelas aktif dan wali kelas yang terdaftar di semester ini.</li>
+            <li><strong style="color: var(--text-primary); font-weight: 700;">Profil Sekolah:</strong> Menarik data identitas sekolah, NPSN, dan alamat terbaru.</li>
+            <li><strong style="color: var(--text-primary); font-weight: 700;">Data PTK & Operator:</strong> Menarik daftar pengguna aktif beserta akunnya.</li>
+            <li><strong style="color: var(--text-primary); font-weight: 700;">Rombongan Belajar:</strong> Menarik seluruh data kelas aktif dan wali kelas yang terdaftar di semester ini.</li>
         </ul>
         <p style="margin-top: 1.5rem; color: #fbbf24; font-size: 0.9rem;">
             ⚠️ Pastikan layanan <strong>Dapodik Lokal (Port 5774)</strong> dalam keadaan berjalan sebelum Anda melakukan sinkronisasi ini.

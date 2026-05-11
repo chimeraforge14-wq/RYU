@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BelongsToTenant;
 
 class P5Proyek extends Model
 {
+    use BelongsToTenant;
     protected $table = 'p5_proyek';
-    protected $fillable = ['tema_id', 'nama_proyek', 'deskripsi', 'semester'];
+    protected $fillable = ['tema_id', 'nama_proyek', 'deskripsi', 'semester', 'school_id'];
 
     public function tema()
     {

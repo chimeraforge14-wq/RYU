@@ -5,6 +5,30 @@
 @section('header_subtitle', 'Ringkasan data pengambilan dari Dapodik')
 
 @section('content')
+    @if(session('role') === 'superadmin' && count($schools) > 0)
+        <div class="animate-slide-up" style="background: var(--card-bg); border: var(--glass-border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="background: var(--accent-light); color: var(--accent); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </div>
+                <div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Filter Data Sekolah</div>
+                    <div style="font-size: 0.95rem; font-weight: 600;">Pilih tenant untuk melihat statistik spesifik</div>
+                </div>
+            </div>
+            <form action="{{ route('admin.log') }}" method="GET" style="display: flex; gap: 0.5rem; align-items: center;">
+                <select name="npsn" onchange="this.form.submit()" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; outline: none; min-width: 250px;">
+                    @foreach($schools as $sch)
+                        <option value="{{ $sch->npsn }}" {{ $selectedNpsn == $sch->npsn ? 'selected' : '' }}>
+                            {{ $sch->name }} ({{ $sch->npsn }})
+                        </option>
+                    @endforeach
+                </select>
+                <noscript><button type="submit" class="btn-primary" style="padding: 0.6rem 1rem;">Pilih</button></noscript>
+            </form>
+        </div>
+    @endif
+
     <!-- Stats Row -->
     <div class="stats-grid animate-slide-up">
         <div class="stat-card">

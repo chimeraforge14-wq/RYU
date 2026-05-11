@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Traits\BelongsToTenant;
 
 class Guru extends Model
 {
+    use BelongsToTenant;
     protected $table = 'guru_manual';
-    protected $guarded = [];
+    protected $fillable = ['ptk_id', 'nama', 'nuptk', 'nik', 'email', 'jenis_ptk', 'school_id'];
 
     protected static function boot()
     {

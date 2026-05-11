@@ -52,10 +52,13 @@ Route::get('/debug-identity', function () {
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [AuthController::class, 'registerAdmin'])->name('register.post');
+Route::post('/login/reset-device', [AuthController::class, 'resetDevice'])->name('login.reset_device');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Protected Routes
-Route::middleware(['auth.custom'])->group(function () {
+Route::middleware(['auth.custom', 'tenant'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/guru', [DashboardController::class, 'guru'])->name('guru');
     Route::get('/siswa', [DashboardController::class, 'siswa'])->name('siswa');
@@ -119,8 +122,6 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::middleware(['role:superadmin'])->group(function () {
         // Student Identity & Rombel Transfer
         Route::get('/peserta-didik', [App\Http\Controllers\StudentController::class, 'index'])->name('students.index');
-        Route::get('/peserta-didik/tambah', [App\Http\Controllers\StudentController::class, 'create'])->name('students.create');
-        Route::post('/peserta-didik/tambah', [App\Http\Controllers\StudentController::class, 'store'])->name('students.store');
         Route::get('/peserta-didik/{id}/edit', [App\Http\Controllers\StudentController::class, 'edit'])->name('students.edit');
         Route::post('/peserta-didik/{id}/update', [App\Http\Controllers\StudentController::class, 'update'])->name('students.update');
         Route::get('/peserta-didik/{id}/edit-data', [App\Http\Controllers\StudentController::class, 'editData'])->name('students.edit_data');
@@ -130,6 +131,13 @@ Route::middleware(['auth.custom'])->group(function () {
 
         // Advanced Settings
         Route::get('/pengaturan/super', [App\Http\Controllers\SettingsController::class, 'index'])->name('settings.super');
+
+        // Tenant / School Management
+        Route::get('/super/sekolah', [App\Http\Controllers\SuperadminController::class, 'manageSchools'])->name('super.schools');
+        Route::post('/super/sekolah', [App\Http\Controllers\SuperadminController::class, 'storeSchool'])->name('super.schools.store');
+        Route::get('/super/sekolah/masuk/{npsn}', [App\Http\Controllers\SuperadminController::class, 'enterSchool'])->name('super.schools.enter');
+        Route::get('/super/sekolah/keluar', [App\Http\Controllers\SuperadminController::class, 'exitSchool'])->name('super.schools.exit');
+        Route::delete('/super/sekolah/{id}', [App\Http\Controllers\SuperadminController::class, 'destroySchool'])->name('super.schools.destroy');
     });
     
     Route::get('/referensi/kelas/anggota/{id}', [App\Http\Controllers\PageController::class, 'anggotaRombel'])->name('anggota_rombel');
@@ -181,7 +189,7 @@ Route::get('/test-dapodik', function() {
     $semester = request('semester', '20251'); 
     $endpoint = request('endpoint', 'getPesertaDidik');
     
-    $url = "http://localhost:5774/WebService/$endpoint?npsn=$npsn&semester_id=$semester";
+    $url = "http://202.10.42.212:5774/WebService/$endpoint?npsn=$npsn&semester_id=$semester";
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

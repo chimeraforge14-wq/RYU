@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\BelongsToTenant;
 
 class PelengkapRapor extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToTenant;
 
     protected $table = 'pelengkap_rapor';
 
@@ -22,5 +23,6 @@ class PelengkapRapor extends Model
         'keterangan_ekskul_1',
         'ekstrakurikuler_2',
         'keterangan_ekskul_2',
+        'school_id',
     ];
 }

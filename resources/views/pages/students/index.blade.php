@@ -11,10 +11,6 @@
                    style="background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.6rem 1.25rem; border-radius: 99px; font-size: 0.85rem; width: 280px; outline: none; transition: border-color 0.3s;"
                    onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border-color)'">
         </div>
-        <a href="{{ route('students.create') }}" style="background: var(--accent-gradient); color: white; padding: 0.6rem 1.5rem; border-radius: 99px; text-decoration: none; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(99,102,241,0.3); transition: all 0.3s;"
-           onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform='translateY(0)'">
-            + Tambah Siswa Baru
-        </a>
     </div>
 
     <div class="table-container animate-slide-up delay-1">

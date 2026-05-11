@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('title', 'Penilaian Kokurikuler - e-Rapor SD')
-@section('header_title', 'Penilaian Kokurikuler')
+@section('title', 'Nilai Kokurikuler - e-Rapor SD')
+@section('header_title', 'Nilai Kokurikuler')
 @section('header_subtitle', 'Input nilai kokurikuler siswa per kelas')
 
 @section('content')

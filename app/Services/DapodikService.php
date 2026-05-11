@@ -56,8 +56,9 @@ class DapodikService
     /**
      * Perform full sync from Dapodik Web Service to local storage
      */
-    public function syncData($baseUrl, $token, $npsn, $semester)
+    public function syncData($baseUrl, $token, $npsn, $semester, $registrationCode = null)
     {
+        set_time_limit(0); // Mencegah timeout saat proses berat
         $this->baseUrl = $baseUrl;
         $this->token = $token;
         $this->npsn = $npsn;
@@ -76,6 +77,30 @@ class DapodikService
 
             $sekolah = $sekolahData['rows'] ?? null;
             
+            // 1. Persiapkan Database Tenant
+            if ($registrationCode) {
+                $dbName = 'erapor_' . strtolower(preg_replace('/[^a-zA-Z0-9_]/', '', $registrationCode));
+                
+                // Cek apakah database sudah ada (Postgres)
+                $exists = \DB::select("SELECT 1 FROM pg_database WHERE datname = ?", [$dbName]);
+                
+                if (empty($exists)) {
+                    // Buat database baru
+                    // Penting: CREATE DATABASE tidak bisa dijalankan di dalam transaksi
+                    \DB::statement("CREATE DATABASE $dbName");
+                }
+
+                // 2. Jalankan Migrasi pada Database Tenant
+                // Set koneksi tenant sementara untuk migrasi
+                config(['database.connections.tenant.database' => $dbName]);
+                \DB::purge('tenant');
+                
+                \Illuminate\Support\Facades\Artisan::call('migrate', [
+                    '--database' => 'tenant',
+                    '--force' => true
+                ]);
+            }
+
             $penggunaData = $this->fetch('getPengguna');
             $pengguna = $penggunaData ? ($penggunaData['rows'] ?? []) : [];
             
@@ -91,6 +116,8 @@ class DapodikService
             $data = [
                 'last_sync' => now()->toDateTimeString(),
                 'semester' => $this->semester,
+                'npsn' => $this->npsn,
+                'registration_code' => $registrationCode,
                 'sekolah' => $sekolah,
                 'pengguna' => $pengguna,
                 'rombonganBelajar' => $rombonganBelajar,
@@ -98,17 +125,25 @@ class DapodikService
                 'pesertaDidik' => $pesertaDidik
             ];
 
-            Storage::disk('local')->put('dapodik_data.json', json_encode($data));
-            Cache::forget('dapodik_local_data'); // Invalidate cache setelah sync
+            $fileName = 'dapodik_data_' . $this->npsn . '.json';
+            Storage::disk('local')->put($fileName, json_encode($data));
+            Cache::forget('dapodik_local_data_' . $this->npsn); 
             
-            $msg = 'Tes Koneksi Dapodik Berhasil! Data ditarik pada ' . $data['last_sync'];
-            if (!empty($this->fetchErrors)) {
-                $msg .= ' | PERINGATAN (Beberapa data gagal ditarik): ' . implode(', ', $this->fetchErrors);
-            }
+            // 3. Update Master Record
+            \App\Models\School::updateOrCreate(
+                ['npsn' => $this->npsn],
+                [
+                    'registration_code' => $registrationCode,
+                    'name' => $sekolah['nama'] ?? 'Sekolah ' . $this->npsn,
+                    'dapodik_url' => $baseUrl,
+                    'dapodik_token' => $token,
+                    'active_semester_id' => $semester
+                ]
+            );
 
             return [
                 'success' => true,
-                'message' => $msg
+                'message' => 'Sinkronisasi Berhasil! Database tenant ' . ($dbName ?? '') . ' telah disiapkan.'
             ];
         } catch (\Exception $e) {
             return [
@@ -119,13 +154,18 @@ class DapodikService
     }
 
     /**
-     * Read local synced data (cached for 30 minutes)
+     * Read local synced data
      */
     protected function getLocalData()
     {
-        return Cache::remember('dapodik_local_data', 1800, function () {
-            if (Storage::disk('local')->exists('dapodik_data.json')) {
-                $content = Storage::disk('local')->get('dapodik_data.json');
+        $npsn = session('npsn') ?? $this->npsn ?? config('app.default_npsn');
+        
+        if (!$npsn) return null;
+
+        return Cache::remember('dapodik_local_data_' . $npsn, 1800, function () use ($npsn) {
+            $fileName = 'dapodik_data_' . $npsn . '.json';
+            if (Storage::disk('local')->exists($fileName)) {
+                $content = Storage::disk('local')->get($fileName);
                 return json_decode($content, true);
             }
             return null;
@@ -412,6 +452,24 @@ class DapodikService
         }
 
         return $result;
+    }
+ 
+    /**
+     * Get basic stats for a specific NPSN from local JSON
+     */
+    public function getStatsByNpsn($npsn)
+    {
+        $fileName = 'dapodik_data_' . $npsn . '.json';
+        if (Storage::disk('local')->exists($fileName)) {
+            $content = Storage::disk('local')->get($fileName);
+            $data = json_decode($content, true);
+            return [
+                'total_ptk' => count($data['ptk'] ?? []),
+                'total_rombel' => count($data['rombonganBelajar'] ?? []),
+                'total_siswa' => count($data['pesertaDidik'] ?? []),
+            ];
+        }
+        return null;
     }
 }
 
